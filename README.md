@@ -73,7 +73,7 @@ Example API response:
 - Multi-language support for inclusivity.
 
 ## 👨‍💻 Team Members
-- [Your Name] – Frontend Developer
+- [Roshan Raut] – Frontend Developer
 - [Teammate] – Backend / ML
 - [Teammate] – Documentation & Testing
 

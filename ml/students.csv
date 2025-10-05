@@ -1,0 +1,4 @@
+| Attendance | GPA | Assignments | FamilyIncome | Activities | Dropout |
+| ---------- | --- | ----------- | ------------ | ---------- | ------- |
+| 85         | 8.1 | 10          | 35000        | Yes        | 0       |
+| 60         | 5.2 | 4           | 15000        | No         | 1       |
