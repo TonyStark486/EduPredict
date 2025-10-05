@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduPredict Login - SIH</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    main {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 50px;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    p {
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
+    .login-btn {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      background: #1dd1a1;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      transform: scale(1.05);
+      background: #10ac84;
+    }
+
+    .register-link {
+      margin-top: 25px;
+      display: block;
+      text-decoration: none;
+      color: #ff9f43;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .register-link:hover {
+      color: #ee7939;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px);}
+      100% { opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">EduPredict</div>
+  </header>
+
+  <main>
+    <h1>Login</h1>
+    <p>Select your account type to login:</p>
+
+    <a href="/login/teacher" class="login-btn">Teacher</a>
+    <a href="/login/parent" class="login-btn">Parent</a>
+    <a href="/login/student" class="login-btn">Student</a>
+    <a href="/login/college" class="login-btn">College</a>
+
+    <a href="/register" class="register-link">Don't have an account? Register yourself</a>
+  </main>
+</body>
+</html>
