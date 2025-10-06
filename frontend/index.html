@@ -27,7 +27,11 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px 50px;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.8); /* slightly darker for sticky header */
+      backdrop-filter: blur(5px);   /* optional blur effect */
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .logo {
@@ -36,19 +40,25 @@
       letter-spacing: 2px;
     }
 
+    /* Top-right navigation links */
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
     .top-right a {
       text-decoration: none;
       color: #fff;
-      background: #ff6b6b;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-weight: 600;
       transition: all 0.3s ease;
     }
 
     .top-right a:hover {
       transform: scale(1.1);
-      background: #ff4757;
+      background: rgba(255, 255, 255, 0.2);
     }
 
     /* Main Welcome Section */
@@ -183,6 +193,10 @@
   <header>
     <div class="logo">EduPredict</div>
     <div class="top-right">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="help.html">Help</a>
+      <a href="contact.html">Contact</a>
     </div>
   </header>
 
@@ -192,7 +206,6 @@
       <p>EduPredict is a modern platform to help colleges reduce student dropout rates using predictive analytics and AI. Identify at-risk students early and provide timely interventions to ensure academic success.</p>
       <a href="login.html" class="btn btn-login">Login</a>
       <a href="register.html" class="btn btn-register">Register College</a>
-
     </div>
     <div class="graphics">
       <img src="https://cdn-icons-png.flaticon.com/512/2910/2910766.png" alt="EduPredict Graphics" width="300">
