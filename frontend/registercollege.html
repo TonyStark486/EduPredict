@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>College Registration - EduPredict</title>
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: rgba(0, 0, 0, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(6px);
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 25px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffdd57;
+    }
+
+    /* Main Container */
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .registration-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 650px;
+      backdrop-filter: blur(6px);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      color: #fff;
+    }
+
+    h3 {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      color: #ffdd57;
+      border-bottom: 2px solid rgba(255,255,255,0.2);
+      padding-bottom: 5px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    label {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    button {
+      background-color: #ffdd57;
+      color: #000;
+      padding: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #ffe784;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: rgba(0,0,0,0.4);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>EduPredict</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="register-college.html">Register College</a></li>
+        <li><a href="#">Help</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="registration-box">
+      <h2>College Registration Form</h2>
+      <form action="#" method="post">
+
+        <!-- Section 1: College Details -->
+        <h3>College Details</h3>
+        <label for="collegeName">College Name:</label>
+        <input type="text" id="collegeName" name="collegeName" placeholder="Enter full college name" required />
+
+        <label for="collegeType">College Type:</label>
+        <select id="collegeType" name="collegeType" required>
+          <option value="">-- Select Type --</option>
+          <option value="autonomous">Autonomous</option>
+          <option value="non-autonomous">Non-Autonomous</option>
+        </select>
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+          <option value="">-- Select Category --</option>
+          <option value="institute">Institute</option>
+          <option value="university">University</option>
+        </select>
+
+        <label for="aided">Aided / Non-Aided:</label>
+        <select id="aided" name="aided" required>
+          <option value="">-- Select --</option>
+          <option value="aided">Aided</option>
+          <option value="non-aided">Non-Aided</option>
+        </select>
+
+        <!-- Section 2: Address -->
+        <h3>Address Details</h3>
+        <label for="address">Address Line 1:</label>
+        <input type="text" id="address" name="address" placeholder="Street / Area / Road" required />
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" placeholder="Enter city name" required />
+
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" placeholder="Enter state name" required />
+
+        <label for="pincode">Pincode:</label>
+        <input type="text" id="pincode" name="pincode" placeholder="Enter pincode" pattern="[0-9]{6}" required />
+
+        <!-- Section 3: Responsible Person -->
+        <h3>Responsible Person Details</h3>
+        <label for="designation">Designation:</label>
+        <select id="designation" name="designation" required>
+          <option value="">-- Select Designation --</option>
+          <option value="dean">Dean</option>
+          <option value="principal">Principal</option>
+          <option value="professor">Professor</option>
+          <option value="hod">HOD</option>
+        </select>
+
+        <label for="personName">Name:</label>
+        <input type="text" id="personName" name="personName" placeholder="Enter full name" required />
+
+        <label for="contact">Contact Number:</label>
+        <input type="tel" id="contact" name="contact" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required />
+
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" placeholder="Enter official email" required />
+
+        <button type="submit">Submit Registration</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 EduPredict. All rights reserved.
+  </footer>
+</body>
+</html>
