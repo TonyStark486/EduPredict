@@ -14,8 +14,8 @@
     }
 
     body {
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #b3b4b5 100%);
+      color: #0a0808;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -27,8 +27,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px 50px;
-      background: rgba(0,0,0,0.8); /* slightly darker for sticky header */
-      backdrop-filter: blur(5px);   /* optional blur effect */
+      background: #000; /* black navbar */
       position: sticky;
       top: 0;
       z-index: 100;
@@ -38,6 +37,7 @@
       font-size: 2rem;
       font-weight: bold;
       letter-spacing: 2px;
+      color: #fff;
     }
 
     /* Top-right navigation links */
@@ -89,6 +89,7 @@
       animation: fadeInUp 1.2s ease forwards;
     }
 
+    /* Buttons */
     .btn {
       display: inline-block;
       text-decoration: none;
@@ -97,11 +98,11 @@
       font-weight: 600;
       margin-right: 15px;
       transition: all 0.3s ease;
+      color: #fff;
     }
 
-    .btn-login {
-      background: #1dd1a1;
-      color: #fff;
+    .btn-login, .btn-register, .btn-registercollege {
+      background: #000;
     }
 
     .btn-login:hover {
@@ -109,19 +110,9 @@
       background: #10ac84;
     }
 
-    .btn-register {
-      background: #ff9f43;
-      color: #fff;
-    }
-
     .btn-register:hover {
       transform: scale(1.1);
       background: #ee7939;
-    }
-
-    .btn-registercollege {
-      background: #1e8a2d;
-      color: #fff;
     }
 
     .btn-registercollege:hover {
@@ -169,14 +160,9 @@
 
     /* Graphics Section */
     .graphics {
-      max-width: 400px;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0px); }
+      max-width: 600px;
+      border-radius: 20px;
+      overflow: hidden;
     }
 
     /* Animations */
@@ -197,6 +183,75 @@
       font-size: 0.9rem;
       color: #eee;
     }
+
+    /* ===== Modal Popup ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+      color: #fff;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      0% { transform: translateY(-20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal h2 {
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+    }
+
+    .login-btn {
+      display: block;
+      text-decoration: none;
+      color: #fff;
+      background: #1dd1a1;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .login-btn:hover {
+      background: #10ac84;
+      transform: scale(1.05);
+    }
+
+    .close-btn {
+      background: #ff6b6b;
+      border: none;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #ee5253;
+    }
+
   </style>
 </head>
 <body>
@@ -214,12 +269,14 @@
     <div class="welcome-text">
       <h1>Welcome to EduPredict!</h1>
       <p>EduPredict is a modern platform to help colleges reduce student dropout rates using predictive analytics and AI. Identify at-risk students early and provide timely interventions to ensure academic success.</p>
-      <a href="login.html" class="btn btn-login">Login</a>
-      <a href="register.html" class="btn btn-register">Register</a>
+
+      <a href="#" id="openLoginModal" class="btn btn-login">Login</a>
+      <a href="#" id="openRegisterModal" class="btn btn-register">Register</a>
       <a href="registercollege.html" class="btn btn-registercollege">College Registration</a>
     </div>
+
     <div class="graphics">
-      <img src="https://cdn-icons-png.flaticon.com/512/2910/2910766.png" alt="EduPredict Graphics" width="300">
+      <img src="collegeimage.png" alt="EduPredict Graphics" width="600">
     </div>
   </main>
 
@@ -245,5 +302,47 @@
   <footer>
     &copy; 2025 EduPredict. All rights reserved.
   </footer>
+
+  <!-- ===== Login Popup ===== -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h2>Select Account Type</h2>
+      <a href="/login/teacher.html" class="login-btn">👩‍🏫 Teacher</a>
+      <a href="/login/student.html" class="login-btn">👨‍🎓 Student</a>
+      <a href="/login/parent.html" class="login-btn">👪 Parent</a>
+      <a href="/login/college.html" class="login-btn">🏫 College</a>
+      <button class="close-btn" id="closeLoginModal">Close</button>
+    </div>
+  </div>
+
+  <!-- ===== Register Popup ===== -->
+  <div class="modal" id="registerModal">
+    <div class="modal-content">
+      <h2>Select Registration Type</h2>
+      <a href="/register/student.html" class="login-btn">👨‍🎓 Student Registration</a>
+      <a href="/register/parent.html" class="login-btn">👪 Parent Registration</a>
+      <a href="/register/teacher.html" class="login-btn">👩‍🏫 Teacher Registration</a>
+      <a href="/register/college.html" class="login-btn">🏫 College Registration</a>
+      <button class="close-btn" id="closeRegisterModal">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Login Modal
+    const loginModal = document.getElementById("loginModal");
+    const openLoginBtn = document.getElementById("openLoginModal");
+    const closeLoginBtn = document.getElementById("closeLoginModal");
+    openLoginBtn.onclick = () => loginModal.style.display = "flex";
+    closeLoginBtn.onclick = () => loginModal.style.display = "none";
+    window.onclick = (e) => { if (e.target == loginModal) loginModal.style.display = "none"; }
+
+    // Register Modal
+    const registerModal = document.getElementById("registerModal");
+    const openRegisterBtn = document.getElementById("openRegisterModal");
+    const closeRegisterBtn = document.getElementById("closeRegisterModal");
+    openRegisterBtn.onclick = () => registerModal.style.display = "flex";
+    closeRegisterBtn.onclick = () => registerModal.style.display = "none";
+    window.onclick = (e) => { if (e.target == registerModal) registerModal.style.display = "none"; }
+  </script>
 </body>
 </html>
