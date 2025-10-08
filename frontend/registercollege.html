@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>College Registration - EduPredict</title>
   <style>
     /* Basic Reset */
@@ -15,19 +15,18 @@
 
     body {
       background: linear-gradient(135deg, #b3b4b5 100%);
-      color: #fff;
+      color: #141313;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* Header */
     header {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 50px;
-      background: rgba(0, 0, 0, 0.8);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -36,61 +35,49 @@
 
     header h1 {
       font-size: 1.8rem;
-      font-weight: 600;
       color: #fff;
     }
 
     nav ul {
-      display: flex;
       list-style: none;
+      display: flex;
       gap: 25px;
     }
 
     nav a {
-      text-decoration: none;
       color: #fff;
+      text-decoration: none;
       font-weight: 500;
-      transition: color 0.3s;
+      transition: color 0.3s ease;
     }
 
     nav a:hover {
       color: #f5f4f0;
     }
 
-    /* Main Container */
-    .container {
+    main {
       flex: 1;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       padding: 40px 20px;
     }
 
-    .registration-box {
-      background: rgba(255, 255, 255, 0.1);
+    .form-container {
+      background: rgba(255,255,255,0.1);
       padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      width: 90%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
       max-width: 650px;
+      width: 100%;
       backdrop-filter: blur(6px);
     }
 
-    h2 {
+    .form-container h2 {
+      color: #fff;
       text-align: center;
       margin-bottom: 25px;
       font-size: 1.8rem;
-      color: #fff; /* same as index page h1 */
-    }
-
-    h3 {
-      margin-top: 30px;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-      color: #f4f3f1; /* same as index page section heading */
-      border-bottom: 2px solid rgba(255,255,255,0.2);
-      padding-bottom: 5px;
     }
 
     form {
@@ -100,22 +87,30 @@
     }
 
     label {
+      color: #fff;
       font-weight: 500;
-      margin-bottom: 5px;
-      color: #fff; /* match index page text */
+      margin-bottom: 6px;
+      display: block;
     }
 
-    input, select, textarea {
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
       padding: 10px;
-      border: none;
       border-radius: 6px;
-      outline: none;
+      border: none;
       font-size: 1rem;
-      color: #000; /* input text stays black for readability */
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      color: #000;
     }
 
     textarea {
-      resize: none;
+      resize: vertical;
+      min-height: 60px;
     }
 
     button {
@@ -126,7 +121,8 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
     }
 
     button:hover {
@@ -155,54 +151,51 @@
     </nav>
   </header>
 
-  <div class="container">
-    <div class="registration-box">
+  <main>
+    <div class="form-container">
       <h2>College Registration Form</h2>
-      <form action="#" method="post">
+      <form id="collegeRegistrationForm" action="#" method="post" autocomplete="off">
 
-        <!-- Section 1: College Details -->
-        <h3>College Details</h3>
-        <label for="collegeName">College Name:</label>
-        <input type="text" id="collegeName" name="collegeName" placeholder="Enter full college name" required />
+        <!-- College Details -->
+        <label for="collegeName">College Name<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="collegeName" name="collegeName" placeholder="Enter full college name" required/>
 
-        <label for="collegeType">College Type:</label>
+        <label for="collegeType">College Type<span style="color:#ff6b6b;">*</span></label>
         <select id="collegeType" name="collegeType" required>
           <option value="">-- Select Type --</option>
           <option value="autonomous">Autonomous</option>
           <option value="non-autonomous">Non-Autonomous</option>
         </select>
 
-        <label for="category">Category:</label>
+        <label for="category">Category<span style="color:#ff6b6b;">*</span></label>
         <select id="category" name="category" required>
           <option value="">-- Select Category --</option>
           <option value="institute">Institute</option>
           <option value="university">University</option>
         </select>
 
-        <label for="aided">Aided / Non-Aided:</label>
+        <label for="aided">Aided / Non-Aided<span style="color:#ff6b6b;">*</span></label>
         <select id="aided" name="aided" required>
           <option value="">-- Select --</option>
           <option value="aided">Aided</option>
           <option value="non-aided">Non-Aided</option>
         </select>
 
-        <!-- Section 2: Address -->
-        <h3>Address Details</h3>
-        <label for="address">Address Line 1:</label>
-        <input type="text" id="address" name="address" placeholder="Street / Area / Road" required />
+        <!-- Address Details -->
+        <label for="address">Address Line 1<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="address" name="address" placeholder="Street / Area / Road" required/>
 
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" placeholder="Enter city name" required />
+        <label for="city">City<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="city" name="city" placeholder="Enter city name" required/>
 
-        <label for="state">State:</label>
-        <input type="text" id="state" name="state" placeholder="Enter state name" required />
+        <label for="state">State<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="state" name="state" placeholder="Enter state name" required/>
 
-        <label for="pincode">Pincode:</label>
-        <input type="text" id="pincode" name="pincode" placeholder="Enter pincode" pattern="[0-9]{6}" required />
+        <label for="pincode">Pincode<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="pincode" name="pincode" placeholder="Enter 6-digit pincode" pattern="[0-9]{6}" required/>
 
-        <!-- Section 3: Responsible Person -->
-        <h3>Responsible Person Details</h3>
-        <label for="designation">Designation:</label>
+        <!-- Responsible Person Details -->
+        <label for="designation">Designation<span style="color:#ff6b6b;">*</span></label>
         <select id="designation" name="designation" required>
           <option value="">-- Select Designation --</option>
           <option value="dean">Dean</option>
@@ -211,22 +204,51 @@
           <option value="hod">HOD</option>
         </select>
 
-        <label for="personName">Name:</label>
-        <input type="text" id="personName" name="personName" placeholder="Enter full name" required />
+        <label for="personName">Name<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="personName" name="personName" placeholder="Enter full name" required/>
 
-        <label for="contact">Contact Number:</label>
-        <input type="tel" id="contact" name="contact" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required />
+        <label for="contact">Contact Number<span style="color:#ff6b6b;">*</span></label>
+        <input type="tel" id="contact" name="contact" placeholder="Enter 10-digit phone number" pattern="[0-9]{10}" required/>
 
-        <label for="email">Email Address:</label>
-        <input type="email" id="email" name="email" placeholder="Enter official email" required />
+        <label for="email">Email Address<span style="color:#ff6b6b;">*</span></label>
+        <input type="email" id="email" name="email" placeholder="Enter official email" required/>
 
-        <a href="collegehomepage.html" class="button-btn">Submit Registration</a>
+<button type="submit" class="btn-submit">Submit Registration</button>
+
+<style>
+  .btn-submit {
+    background-color: #fffffd;
+    color: #000;
+    padding: 12px 20px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 1rem;
+    margin-top: 12px;
+    display: inline-block;
+  }
+  .btn-submit:hover {
+    background-color: #ffe784;
+    transform: scale(1.05);
+  }
+</style>
       </form>
     </div>
-  </div>
+  </main>
 
   <footer>
     &copy; 2025 EduPredict. All rights reserved.
   </footer>
+
+  <script>
+    // Basic form submission handling (placeholder for actual backend integration)
+    document.getElementById('collegeRegistrationForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      alert('College registration submitted. Connect this to your backend.');
+      // Add your fetch/ajax POST request here to send form data to your server
+    });
+  </script>
 </body>
 </html>
