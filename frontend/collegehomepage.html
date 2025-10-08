@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ABC Engineering College - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ===== SAME THEME AS INDEX PAGE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #b3b4b5 100%);
+      color: #0a0808;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .college-brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+    }
+
+    .college-brand img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    .college-brand h1 {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .edit-btn {
+      background: #10ac84;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .edit-btn:hover {
+      background: #1dd1a1;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 250px;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      transition: all 0.4s ease;
+      padding-top: 80px;
+      z-index: 999;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      color: #fff;
+      padding: 15px 25px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* ===== MAIN ===== */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .top-section {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .chart-box, .notification-box {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 30px;
+      width: 350px;
+      margin: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .chart-box h2, .notification-box h2 {
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .notif {
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* ===== STUDENT SUMMARY ===== */
+    .summary-section {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      padding: 25px 35px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 230px;
+      transition: transform 0.3s;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .summary-card h3 {
+      color: #000;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+
+    .summary-card p {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #10ac84;
+    }
+
+    /* ===== DEPARTMENTS ===== */
+    .departments {
+      width: 100%;
+      text-align: left;
+      margin-top: 40px;
+    }
+
+    .departments h2 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .department {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      padding: 15px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .department:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .year-list {
+      display: none;
+      padding-left: 30px;
+      margin-top: 10px;
+    }
+
+    .year-list a {
+      display: block;
+      text-decoration: none;
+      color: #000;
+      padding: 6px 0;
+      font-weight: 500;
+    }
+
+    .year-list a:hover {
+      color: #10ac84;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #eee;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="college-brand" id="menuBtn">
+      <img src="collegelogo.png" alt="College Logo" />
+      <h1>Government College of Engineering, Karad</h1>
+    </div>
+
+    <div class="header-right">
+      <button class="edit-btn">✏️ Edit Profile</button>
+    </div>
+  </header>
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar" id="sidebar">
+    <a href="#">🏠 Home</a>
+    <a href="#">🏛️ Departments</a>
+    <a href="#">📊 Dashboard</a>
+    <a href="#">📬 Student Requests</a>
+    <a href="#">ℹ️ About</a>
+    <a href="#">❓ Help</a>
+    <a href="#">📞 Contact</a>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main>
+    <div class="top-section">
+      <div class="chart-box">
+        <h2>Student Distribution</h2>
+        <canvas id="studentChart"></canvas>
+      </div>
+
+      <div class="notification-box">
+        <h2>Notifications Sent</h2>
+        <div class="notif">📩 To Parents: <span>120</span></div>
+        <div class="notif">👩‍🏫 To Teachers: <span>85</span></div>
+      </div>
+    </div>
+
+    <!-- ===== STUDENT SUMMARY ===== -->
+    <div class="summary-section">
+      <div class="summary-card">
+        <h3>Total Students</h3>
+        <p>500</p>
+      </div>
+      <div class="summary-card">
+        <h3>At Risk Students</h3>
+        <p>60</p>
+      </div>
+      <div class="summary-card">
+        <h3>Dropout Students</h3>
+        <p>15</p>
+      </div>
+      <div class="summary-card">
+        <h3>Saved Students</h3>
+        <p>425</p>
+      </div>
+    </div>
+
+    <!-- ===== DEPARTMENTS ===== -->
+    <div class="departments">
+      <h2>Departments</h2>
+
+      <div class="department" onclick="toggleYears('cse')">💻 Computer Science & Engineering</div>
+      <div class="year-list" id="cse">
+        <a href="#">1st Year</a>
+        <a href="#">2nd Year</a>
+        <a href="#">3rd Year</a>
+        <a href="#">4th Year</a>
+      </div>
+
+      <div class="department" onclick="toggleYears('it')">🌐 Information Technology</div>
+      <div class="year-list" id="it">
+        <a href="#">1st Year</a>
+        <a href="#">2nd Year</a>
+        <a href="#">3rd Year</a>
+        <a href="#">4th Year</a>
+      </div>
+
+      <div class="department" onclick="toggleYears('mech')">⚙️ Mechanical Engineering</div>
+      <div class="year-list" id="mech">
+        <a href="#">1st Year</a>
+        <a href="#">2nd Year</a>
+        <a href="#">3rd Year</a>
+        <a href="#">4th Year</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2025 ABC Engineering College. All rights reserved.
+  </footer>
+
+  <script>
+    // Sidebar Toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.onclick = () => sidebar.classList.toggle('active');
+
+    // Toggle Years
+    function toggleYears(id) {
+      const list = document.getElementById(id);
+      list.style.display = list.style.display === "block" ? "none" : "block";
+    }
+
+    // Pie Chart
+    const ctx = document.getElementById('studentChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Total', 'At Risk', 'Dropout', 'Saved'],
+        datasets: [{
+          data: [500, 60, 15, 425],
+          backgroundColor: ['#2e86de', '#ee5253', '#ff9f43', '#10ac84']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  </script>
+
+</body>
+</html>
