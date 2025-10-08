@@ -33,7 +33,7 @@ import os
 import os
 
 # Automatically use current folder (where ml.py is located)
-DATA_PATH = os.path.join(os.getcwd(), "student's dropout dataset.csv")
+DATA_PATH = os.path.join(os.getcwd(), "data.csv")
 MODEL_PATH = os.path.join(os.getcwd(), "dropout_random_forest_model.pkl")
 
 def load_data(path=DATA_PATH):
