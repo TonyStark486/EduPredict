@@ -52,3 +52,7 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 app.get('/', (req, res) => {
   res.send('EduPredict API is running.');
 });
+
+
+const cors = require("cors");
+app.use(cors({ origin: "https://edu-predict-sih.vercel.app" }));
