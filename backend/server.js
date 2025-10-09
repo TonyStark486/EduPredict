@@ -46,6 +46,16 @@ app.post('/api/colleges/register', async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   }
+  try {
+  // existing code
+  console.log("Inserting college:", req.body);
+  const result = await pool.query(/* your insert query */);
+  console.log("Insert result:", result);
+} catch (err) {
+  console.error("Database error:", err);
+  // existing error response code
+}
+
 });
 
 // Simple message for root route
