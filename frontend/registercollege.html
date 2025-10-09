@@ -252,3 +252,23 @@
   </script>
 </body>
 </html>
+
+<script>
+document.getElementById("yourFormId").onsubmit = function(event) {
+  event.preventDefault();
+  fetch('https://your-backend.onrender.com/api/colleges/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      // collect form values here, e.g.:
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      // ... rest of form fields ...
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    // handle response as needed
+  });
+};
+</script>
