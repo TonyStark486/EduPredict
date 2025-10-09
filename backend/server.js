@@ -48,3 +48,7 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
 
+//simple message after clicking on backend link
+app.get('/', (req, res) => {
+  res.send('EduPredict API is running.');
+});
