@@ -16,7 +16,7 @@ CORS(app)
 # 🔹 Absolute Path for ML Model
 # ==============================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR,  'dropout_random_forest_model.pkl')
+MODEL_PATH = os.path.join(BASE_DIR,  'model.pkl')
 
 # Debug print to verify path
 print("Looking for model at:", MODEL_PATH)
