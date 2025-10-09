@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>College Profile Management - EduPredict</title>
+  <style>
+    /* Root & base */
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #b3b4b5 100%);
+      color: #0a0808;
+      min-height: 100vh;
+      padding: 1rem 2rem;
+    }
+    header {
+      background: #000;
+      color: #fff;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      font-size: 1.4rem;
+    }
+    main {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      background: rgba(255,255,255,0.03);
+      border-radius: 1rem;
+      box-shadow: 0 0 9px rgba(0,0,0,0.15);
+      padding: 2rem 3rem;
+    }
+    h1, h2 {
+      margin-bottom: 1rem;
+      color: #141313;
+    }
+    section {
+      margin-bottom: 2.5rem;
+    }
+    /* Form styling */
+    form {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      row-gap: 1rem;
+      column-gap: 1.6rem;
+      align-items: center;
+      color: #141313;
+    }
+    label {
+      font-weight: 600;
+    }
+    input[type=text],
+    input[type=email],
+    input[type=password],
+    select {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 0.4rem;
+      font-size: 1rem;
+      width: 100%;
+      background: #fff;
+      transition: border-color 0.25s ease;
+    }
+    input[type=text]:focus,
+    input[type=email]:focus,
+    input[type=password]:focus,
+    select:focus {
+      outline: none;
+      border-color: #10ac84;
+      box-shadow: 0 0 8px #10ac8477;
+    }
+    /* Buttons */
+    button {
+      grid-column: 2 / 3;
+      width: 130px;
+      margin-top: 1rem;
+      background: #10ac84;
+      border: none;
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.55rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #0d8b6b;
+    }
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      border-radius: 0.8rem;
+      overflow: hidden;
+      background: #fff;
+    }
+    th, td {
+      padding: 0.7rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #10ac84;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    /* Inline action buttons */
+    .btn-small {
+      background: #ee5253;
+      border: none;
+      color: white;
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+      transition: background 0.2s ease;
+    }
+    .btn-small:hover {
+      background: #c3311f;
+    }
+    /* Responsive */
+    @media (max-width: 720px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+      label, button {
+        grid-column: 1;
+      }
+      button {
+        width: 100%;
+        margin-top: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>EduPredict - College Profile Management</header>
+
+  <main>
+
+    <!-- College Profile Section -->
+    <section aria-labelledby="profile-title">
+      <h1 id="profile-title">Edit College Profile</h1>
+      <form id="collegeProfileForm">
+        <label for="collegeName">College Name</label>
+        <input type="text" id="collegeName" name="name" required />
+
+        <label for="collegeCode">College Code</label>
+        <input type="text" id="collegeCode" name="code" required />
+
+        <label for="collegeAddress">Address</label>
+        <input type="text" id="collegeAddress" name="address" required />
+
+        <label for="collegeCity">City</label>
+        <input type="text" id="collegeCity" name="city" required />
+
+        <label for="collegeState">State</label>
+        <input type="text" id="collegeState" name="state" required />
+
+        <label for="collegePincode">Pincode</label>
+        <input type="text" id="collegePincode" name="pincode" required />
+
+        <label for="collegeEmail">Email</label>
+        <input type="email" id="collegeEmail" name="email" required />
+
+        <label for="collegePhone">Phone</label>
+        <input type="text" id="collegePhone" name="phone" required />
+
+        <label for="principalName">Principal Name</label>
+        <input type="text" id="principalName" name="principal_name" required />
+
+        <label for="collegeType">College Type</label>
+        <select id="collegeType" name="college_type" required>
+          <option value="">Select Type</option>
+          <option value="autonomous">Autonomous</option>
+          <option value="non-autonomous">Non-Autonomous</option>
+        </select>
+
+        <label for="collegeCategory">Category</label>
+        <select id="collegeCategory" name="category" required>
+          <option value="">Select Category</option>
+          <option value="institute">Institute</option>
+          <option value="university">University</option>
+        </select>
+
+        <label for="collegeAided">Aided</label>
+        <select id="collegeAided" name="aided" required>
+          <option value="">Select</option>
+          <option value="aided">Aided</option>
+          <option value="non-aided">Non-Aided</option>
+        </select>
+
+        <button type="submit">Save Profile</button>
+      </form>
+    </section>
+
+    <!-- Department Management Section -->
+    <section aria-labelledby="dept-title">
+      <h2 id="dept-title">Manage Departments</h2>
+      <button id="addDeptBtn" class="btn-small">+ Add Department</button>
+      <table id="departmentsTable" aria-label="Departments list">
+        <thead>
+          <tr>
+            <th>Department Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic rows here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Teachers Management Section -->
+    <section aria-labelledby="teachers-title">
+      <h2 id="teachers-title">Manage Teachers</h2>
+      <button id="addTeacherBtn" class="btn-small">+ Add Teacher</button>
+      <table id="teachersTable" aria-label="Teachers list">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Department</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic rows here -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Students Management Section -->
+    <section aria-labelledby="students-title">
+      <h2 id="students-title">Manage Students</h2>
+      <button id="addStudentBtn" class="btn-small">+ Add Student</button>
+      <table id="studentsTable" aria-label="Students list">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Roll No.</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamic rows here -->
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+</body>
+</html>
