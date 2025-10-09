@@ -46,6 +46,7 @@
       height: 50px;
       border-radius: 50%;
       border: 2px solid #fff;
+      object-fit: cover;
     }
 
     .college-brand h1 {
@@ -75,21 +76,50 @@
       background: #1dd1a1;
     }
 
+    /* Toggle button for Sidebar on small screens */
+    #menuToggleBtn {
+      display: none;
+      background: #10ac84;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 15px;
+    }
+    #menuToggleBtn:hover {
+      background: #1dd1a1;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      display: flex;
+      min-height: calc(100vh - 70px);
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      width: 95%;
+      gap: 25px;
+    }
+
     /* ===== SIDEBAR ===== */
     .sidebar {
-      position: fixed;
-      top: 0;
-      left: -260px;
-      width: 250px;
-      height: 100%;
+      flex: 0 0 250px;
       background: rgba(0, 0, 0, 0.95);
-      transition: all 0.4s ease;
       padding-top: 80px;
+      border-radius: 12px;
+      height: calc(100vh - 70px);
+      position: sticky;
+      top: 70px;
+      overflow-y: auto;
+      box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+      transform: translateX(0);
       z-index: 999;
     }
 
-    .sidebar.active {
-      left: 0;
+    .sidebar.hidden {
+      transform: translateX(-280px);
     }
 
     .sidebar a {
@@ -99,26 +129,30 @@
       text-decoration: none;
       font-weight: 500;
       transition: background 0.3s;
+      border-left: 4px solid transparent;
     }
 
-    .sidebar a:hover {
+    .sidebar a:hover,
+    .sidebar a.active {
       background: rgba(255,255,255,0.15);
+      border-left: 4px solid #10ac84;
+      color: #10ac84;
     }
 
-    /* ===== MAIN ===== */
+    /* ===== MAIN CONTENT ===== */
     main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 40px;
+      gap: 25px;
     }
 
+    /* Top Section with Chart and Notifications */
     .top-section {
       display: flex;
-      justify-content: space-around;
+      gap: 30px;
       flex-wrap: wrap;
-      width: 100%;
+      justify-content: center;
     }
 
     .chart-box, .notification-box {
@@ -127,9 +161,11 @@
       border-radius: 15px;
       padding: 30px;
       width: 350px;
-      margin: 20px;
       text-align: center;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .chart-box h2, .notification-box h2 {
@@ -144,15 +180,49 @@
       margin: 10px 0;
       border-radius: 8px;
       font-weight: 600;
+      width: 100%;
+    }
+
+    /* Pie Chart Legend next to chart */
+    .chart-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+      color: #000;
+      min-width: 150px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .legend-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     /* ===== STUDENT SUMMARY ===== */
     .summary-section {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
+      justify-items: center;
+      margin-top: 0;
     }
 
     .summary-card {
@@ -162,7 +232,8 @@
       padding: 25px 35px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      width: 230px;
+      width: 100%;
+      max-width: 230px;
       transition: transform 0.3s;
     }
 
@@ -182,16 +253,56 @@
       color: #10ac84;
     }
 
+    /* ===== QUICK ACTIONS ===== */
+    .quick-actions {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      padding: 20px 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      max-width: 1000px;
+      margin: 15px auto 0;
+    }
+
+    .action-btn {
+      background: #000;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background-color 0.3s, transform 0.3s;
+      white-space: nowrap;
+      box-shadow: 0 2px 10px #c7f0df;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: #10ac84;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px #10ac84aa;
+    }
+
     /* ===== DEPARTMENTS ===== */
     .departments {
       width: 100%;
       text-align: left;
       margin-top: 40px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .departments h2 {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       margin-bottom: 20px;
+      color: #141313;
+      font-weight: 700;
+      text-align: center;
     }
 
     .department {
@@ -200,7 +311,15 @@
       margin-bottom: 10px;
       padding: 15px 20px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #141313;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
 
     .department:hover {
@@ -211,26 +330,62 @@
       display: none;
       padding-left: 30px;
       margin-top: 10px;
+      border-left: 3px solid #10ac84;
+      max-width: 400px;
     }
 
     .year-list a {
       display: block;
       text-decoration: none;
-      color: #000;
-      padding: 6px 0;
+      color: #141313;
+      padding: 8px 0;
       font-weight: 500;
+      position: relative;
+    }
+
+    .year-list a::before {
+      content: "→";
+      color: #10ac84;
+      margin-right: 8px;
+      position: absolute;
+      left: -18px;
+      top: 0;
     }
 
     .year-list a:hover {
       color: #10ac84;
+      text-decoration: underline;
     }
 
+    /* ===== FOOTER ===== */
     footer {
       text-align: center;
       padding: 20px;
       font-size: 0.9rem;
       color: #eee;
       background: #000;
+      margin-top: auto;
+    }
+
+    /* ===== MEDIA QUERIES ===== */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .top-section {
+        justify-content: center;
+      }
+
+      .sidebar {
+        position: fixed;
+        height: 100%;
+        z-index: 1001;
+      }
+
+      #menuToggleBtn {
+        display: inline-block;
+      }
     }
   </style>
 </head>
@@ -238,122 +393,166 @@
 
   <!-- ===== HEADER ===== -->
   <header>
-    <div class="college-brand" id="menuBtn">
-      <img src="collegelogo.png" alt="College Logo" />
-      <h1>Government College of Engineering, Karad</h1>
+    <div style="display: flex; align-items: center;">
+      <button id="menuToggleBtn" aria-label="Toggle Menu">☰ Menu</button>
+      <div class="college-brand" id="menuBtn" tabindex="0">
+        <img src="collegelogo.png" alt="College Logo" />
+        <h1>Government College of Engineering, Karad</h1>
+      </div>
     </div>
-
     <div class="header-right">
-      <button class="edit-btn">✏️ Edit Profile</button>
+      <a href="editprofile.html" id="openeditmenu" class="edit-btn">✏️ Edit Profile</a>
+      <button class=""></button>
     </div>
   </header>
 
-  <!-- ===== SIDEBAR ===== -->
-  <div class="sidebar" id="sidebar">
-    <a href="#">🏠 Home</a>
-    <a href="#">🏛️ Departments</a>
-    <a href="#">📊 Dashboard</a>
-    <a href="#">📬 Student Requests</a>
-    <a href="#">ℹ️ About</a>
-    <a href="#">❓ Help</a>
-    <a href="#">📞 Contact</a>
+  <div class="container">
+
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar" id="sidebar" aria-label="Sidebar navigation">
+      <a href="collegehomepage.html" class="active">🏠 Home</a>
+      <a href="collegedepartments.html">🏛️ Departments</a>
+      <a href="#">📊 Dashboard</a>
+      <a href="#">📬 Student Requests</a>
+      <a href="#">ℹ️ About</a>
+      <a href="#">❓ Help</a>
+      <a href="#">📞 Contact</a>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+      <section class="top-section">
+        <div class="chart-box">
+          <h2>Student Distribution</h2>
+          <div class="chart-wrapper">
+            <canvas id="studentChart" width="280" height="280"></canvas>
+            <div class="chart-legend">
+              <div class="legend-item"><span class="legend-color" style="background:#2e86de"></span>Total Students (500)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#ee5253"></span>At Risk (60)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#ff9f43"></span>Dropout (15)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#10ac84"></span>Saved (425)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notification-box" aria-live="polite" aria-atomic="true">
+          <h2>Notifications Sent</h2>
+          <div class="notif" role="alert">📩 To Parents: <strong>120</strong></div>
+          <div class="notif" role="alert">👩‍🏫 To Teachers: <strong>85</strong></div>
+        </div>
+      </section>
+
+      <section class="summary-section" aria-label="Student Summary">
+        <div class="summary-card" tabindex="0">
+          <h3>Total Students</h3>
+          <p>500</p>
+        </div>
+        <div class="summary-card" tabindex="0">
+          <h3>At Risk Students</h3>
+          <p>60</p>
+        </div>
+        <div class="summary-card" tabindex="0">
+          <h3>Dropout Students</h3>
+          <p>15</p>
+        </div>
+        <div class="summary-card" tabindex="0">
+          <h3>Saved Students</h3>
+          <p>425</p>
+        </div>
+      </section>
+
+      <section class="quick-actions" aria-label="Quick Actions">
+        <a href="#" class="action-btn">Add Students</a>
+        <a href="#" class="action-btn">Manage Mentors</a>
+        <a href="#" class="action-btn">View Analytics</a>
+        <a href="#" class="action-btn">Send Notifications</a>
+        <a href="#" class="action-btn">Settings</a>
+      </section>
+
+      <section class="departments" aria-label="Departments List">
+        <h2>Departments</h2>
+
+        <div class="department" tabindex="0" role="button" aria-expanded="false" aria-controls="cse" onclick="toggleYears('cse')" onkeypress="if(event.key==='Enter'){toggleYears('cse')}">
+          💻 Computer Science & Engineering
+          <span aria-hidden="true">▼</span>
+        </div>
+        <div class="year-list" id="cse" aria-hidden="true" role="region">
+          <a href="#" title="1st Year Computer Science">1st Year</a>
+          <a href="#" title="2nd Year Computer Science">2nd Year</a>
+          <a href="#" title="3rd Year Computer Science">3rd Year</a>
+          <a href="#" title="4th Year Computer Science">4th Year</a>
+        </div>
+
+        <div class="department" tabindex="0" role="button" aria-expanded="false" aria-controls="it" onclick="toggleYears('it')" onkeypress="if(event.key==='Enter'){toggleYears('it')}">
+          🌐 Information Technology
+          <span aria-hidden="true">▼</span>
+        </div>
+        <div class="year-list" id="it" aria-hidden="true" role="region">
+          <a href="#" title="1st Year IT">1st Year</a>
+          <a href="#" title="2nd Year IT">2nd Year</a>
+          <a href="#" title="3rd Year IT">3rd Year</a>
+          <a href="#" title="4th Year IT">4th Year</a>
+        </div>
+
+        <div class="department" tabindex="0" role="button" aria-expanded="false" aria-controls="mech" onclick="toggleYears('mech')" onkeypress="if(event.key==='Enter'){toggleYears('mech')}">
+          ⚙️ Mechanical Engineering
+          <span aria-hidden="true">▼</span>
+        </div>
+        <div class="year-list" id="mech" aria-hidden="true" role="region">
+          <a href="#" title="1st Year Mechanical">1st Year</a>
+          <a href="#" title="2nd Year Mechanical">2nd Year</a>
+          <a href="#" title="3rd Year Mechanical">3rd Year</a>
+          <a href="#" title="4th Year Mechanical">4th Year</a>
+        </div>
+      </section>
+    </main>
   </div>
-
-  <!-- ===== MAIN CONTENT ===== -->
-  <main>
-    <div class="top-section">
-      <div class="chart-box">
-        <h2>Student Distribution</h2>
-        <canvas id="studentChart"></canvas>
-      </div>
-
-      <div class="notification-box">
-        <h2>Notifications Sent</h2>
-        <div class="notif">📩 To Parents: <span>120</span></div>
-        <div class="notif">👩‍🏫 To Teachers: <span>85</span></div>
-      </div>
-    </div>
-
-    <!-- ===== STUDENT SUMMARY ===== -->
-    <div class="summary-section">
-      <div class="summary-card">
-        <h3>Total Students</h3>
-        <p>500</p>
-      </div>
-      <div class="summary-card">
-        <h3>At Risk Students</h3>
-        <p>60</p>
-      </div>
-      <div class="summary-card">
-        <h3>Dropout Students</h3>
-        <p>15</p>
-      </div>
-      <div class="summary-card">
-        <h3>Saved Students</h3>
-        <p>425</p>
-      </div>
-    </div>
-
-    <!-- ===== DEPARTMENTS ===== -->
-    <div class="departments">
-      <h2>Departments</h2>
-
-      <div class="department" onclick="toggleYears('cse')">💻 Computer Science & Engineering</div>
-      <div class="year-list" id="cse">
-        <a href="#">1st Year</a>
-        <a href="#">2nd Year</a>
-        <a href="#">3rd Year</a>
-        <a href="#">4th Year</a>
-      </div>
-
-      <div class="department" onclick="toggleYears('it')">🌐 Information Technology</div>
-      <div class="year-list" id="it">
-        <a href="#">1st Year</a>
-        <a href="#">2nd Year</a>
-        <a href="#">3rd Year</a>
-        <a href="#">4th Year</a>
-      </div>
-
-      <div class="department" onclick="toggleYears('mech')">⚙️ Mechanical Engineering</div>
-      <div class="year-list" id="mech">
-        <a href="#">1st Year</a>
-        <a href="#">2nd Year</a>
-        <a href="#">3rd Year</a>
-        <a href="#">4th Year</a>
-      </div>
-    </div>
-  </main>
 
   <footer>
     © 2025 ABC Engineering College. All rights reserved.
   </footer>
 
   <script>
-    // Sidebar Toggle
-    const menuBtn = document.getElementById('menuBtn');
+    // Sidebar Toggle for small screens
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
     const sidebar = document.getElementById('sidebar');
-    menuBtn.onclick = () => sidebar.classList.toggle('active');
+    menuToggleBtn.onclick = () => sidebar.classList.toggle('hidden');
 
-    // Toggle Years
+    // Toggle Years list visibility + aria-expanded attributes
     function toggleYears(id) {
       const list = document.getElementById(id);
-      list.style.display = list.style.display === "block" ? "none" : "block";
+      const isVisible = list.style.display === "block";
+      list.style.display = isVisible ? "none" : "block";
+
+      // Update aria attributes for accessibility
+      const deptButton = document.querySelector(`.department[aria-controls="${id}"]`);
+      if(deptButton) {
+        deptButton.setAttribute('aria-expanded', !isVisible);
+      }
+      list.setAttribute('aria-hidden', isVisible);
     }
 
-    // Pie Chart
+    // Pie Chart using Chart.js
     const ctx = document.getElementById('studentChart').getContext('2d');
+
     new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Total', 'At Risk', 'Dropout', 'Saved'],
+        labels: ['Total Students', 'At Risk', 'Dropout', 'Saved'],
         datasets: [{
           data: [500, 60, 15, 425],
-          backgroundColor: ['#2e86de', '#ee5253', '#ff9f43', '#10ac84']
+          backgroundColor: ['#2e86de', '#ee5253', '#ff9f43', '#10ac84'],
+          borderWidth: 1,
+          borderColor: '#fff',
         }]
       },
       options: {
         responsive: true,
-        plugins: { legend: { position: 'bottom' } }
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true, mode: 'nearest' }
+        },
+        animation: { duration: 1000, easing: 'easeOutQuart' },
       }
     });
   </script>

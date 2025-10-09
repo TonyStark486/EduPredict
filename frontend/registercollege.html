@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>College Registration - EduPredict</title>
   <style>
-    /* Basic Reset */
     * {
       margin: 0;
       padding: 0;
@@ -15,19 +14,18 @@
 
     body {
       background: linear-gradient(135deg, #b3b4b5 100%);
-      color: #fff;
+      color: #141313;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* Header */
     header {
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 50px;
-      background: rgba(0, 0, 0, 0.8);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -36,61 +34,49 @@
 
     header h1 {
       font-size: 1.8rem;
-      font-weight: 600;
       color: #fff;
     }
 
     nav ul {
-      display: flex;
       list-style: none;
+      display: flex;
       gap: 25px;
     }
 
     nav a {
-      text-decoration: none;
       color: #fff;
+      text-decoration: none;
       font-weight: 500;
-      transition: color 0.3s;
+      transition: color 0.3s ease;
     }
 
     nav a:hover {
       color: #f5f4f0;
     }
 
-    /* Main Container */
-    .container {
+    main {
       flex: 1;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       padding: 40px 20px;
     }
 
-    .registration-box {
-      background: rgba(255, 255, 255, 0.1);
+    .form-container {
+      background: rgba(255,255,255,0.1);
       padding: 40px;
       border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      width: 90%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
       max-width: 650px;
+      width: 100%;
       backdrop-filter: blur(6px);
     }
 
-    h2 {
+    .form-container h2 {
+      color: #fff;
       text-align: center;
       margin-bottom: 25px;
       font-size: 1.8rem;
-      color: #fff; /* same as index page h1 */
-    }
-
-    h3 {
-      margin-top: 30px;
-      margin-bottom: 15px;
-      font-size: 1.2rem;
-      color: #f4f3f1; /* same as index page section heading */
-      border-bottom: 2px solid rgba(255,255,255,0.2);
-      padding-bottom: 5px;
     }
 
     form {
@@ -100,22 +86,31 @@
     }
 
     label {
+      color: #fff;
       font-weight: 500;
-      margin-bottom: 5px;
-      color: #fff; /* match index page text */
+      margin-bottom: 6px;
+      display: block;
     }
 
-    input, select, textarea {
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    select,
+    textarea {
       padding: 10px;
-      border: none;
       border-radius: 6px;
-      outline: none;
+      border: none;
       font-size: 1rem;
-      color: #000; /* input text stays black for readability */
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+      color: #000;
     }
 
     textarea {
-      resize: none;
+      resize: vertical;
+      min-height: 60px;
     }
 
     button {
@@ -126,11 +121,27 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
     }
 
     button:hover {
       background-color: #ffe784;
+    }
+
+    .response-message {
+      text-align: center;
+      margin-top: 18px;
+      font-weight: 600;
+      color: #10ac84;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.07);
+      border-radius: 7px;
+      padding: 8px;
+    }
+
+    .response-message.error {
+      color: #ee5253;
     }
 
     footer {
@@ -155,78 +166,125 @@
     </nav>
   </header>
 
-  <div class="container">
-    <div class="registration-box">
+  <main>
+    <div class="form-container">
       <h2>College Registration Form</h2>
-      <form action="#" method="post">
+      <form id="collegeRegistrationForm" autocomplete="off">
+        <!-- College Details -->
+        <label for="collegeName">College Name<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="collegeName" name="name" placeholder="Enter full college name" required/>
 
-        <!-- Section 1: College Details -->
-        <h3>College Details</h3>
-        <label for="collegeName">College Name:</label>
-        <input type="text" id="collegeName" name="collegeName" placeholder="Enter full college name" required />
-
-        <label for="collegeType">College Type:</label>
-        <select id="collegeType" name="collegeType" required>
+        <label for="collegeType">College Type<span style="color:#ff6b6b;">*</span></label>
+        <select id="collegeType" name="college_type" required>
           <option value="">-- Select Type --</option>
           <option value="autonomous">Autonomous</option>
           <option value="non-autonomous">Non-Autonomous</option>
         </select>
 
-        <label for="category">Category:</label>
+        <label for="category">Category<span style="color:#ff6b6b;">*</span></label>
         <select id="category" name="category" required>
           <option value="">-- Select Category --</option>
           <option value="institute">Institute</option>
           <option value="university">University</option>
         </select>
 
-        <label for="aided">Aided / Non-Aided:</label>
+        <label for="aided">Aided / Non-Aided<span style="color:#ff6b6b;">*</span></label>
         <select id="aided" name="aided" required>
           <option value="">-- Select --</option>
           <option value="aided">Aided</option>
           <option value="non-aided">Non-Aided</option>
         </select>
 
-        <!-- Section 2: Address -->
-        <h3>Address Details</h3>
-        <label for="address">Address Line 1:</label>
-        <input type="text" id="address" name="address" placeholder="Street / Area / Road" required />
+        <!-- Address Details -->
+        <label for="address">Address Line 1<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="address" name="address" placeholder="Street / Area / Road" required/>
 
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" placeholder="Enter city name" required />
+        <label for="city">City<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="city" name="city" placeholder="Enter city name" required/>
 
-        <label for="state">State:</label>
-        <input type="text" id="state" name="state" placeholder="Enter state name" required />
+        <label for="state">State<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="state" name="state" placeholder="Enter state name" required/>
 
-        <label for="pincode">Pincode:</label>
-        <input type="text" id="pincode" name="pincode" placeholder="Enter pincode" pattern="[0-9]{6}" required />
+        <label for="pincode">Pincode<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="pincode" name="pincode" pattern="[0-9]{6}" placeholder="Enter 6-digit pincode" required/>
 
-        <!-- Section 3: Responsible Person -->
-        <h3>Responsible Person Details</h3>
-        <label for="designation">Designation:</label>
-        <select id="designation" name="designation" required>
-          <option value="">-- Select Designation --</option>
-          <option value="dean">Dean</option>
-          <option value="principal">Principal</option>
-          <option value="professor">Professor</option>
-          <option value="hod">HOD</option>
-        </select>
+        <!-- Principal Details -->
+        <label for="personName">Principal Name<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="personName" name="principal_name" placeholder="Enter full name" required/>
 
-        <label for="personName">Name:</label>
-        <input type="text" id="personName" name="personName" placeholder="Enter full name" required />
+        <label for="phone">Phone<span style="color:#ff6b6b;">*</span></label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="Enter 10-digit phone number" required/>
 
-        <label for="contact">Contact Number:</label>
-        <input type="tel" id="contact" name="contact" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required />
+        <label for="email">Email Address<span style="color:#ff6b6b;">*</span></label>
+        <input type="email" id="email" name="email" placeholder="Enter official email" required/>
 
-        <label for="email">Email Address:</label>
-        <input type="email" id="email" name="email" placeholder="Enter official email" required />
+        <label for="code">College Code<span style="color:#ff6b6b;">*</span></label>
+        <input type="text" id="code" name="code" placeholder="Unique college code" required/>
 
-        <a href="collegehomepage.html" class="button-btn">Submit Registration</a>
+        <label for="password">Password<span style="color:#ff6b6b;">*</span></label>
+        <input type="password" id="password" name="password" placeholder="Create a password" required/>
+
+        <button type="submit" class="btn-submit">Submit Registration</button>
       </form>
+      <div id="responseMsg" class="response-message" style="display:none"></div>
     </div>
-  </div>
+  </main>
 
   <footer>
     &copy; 2025 EduPredict. All rights reserved.
   </footer>
+
+  <script>
+    document.getElementById('collegeRegistrationForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const data = {
+        name: form.name.value,
+        college_type: form.college_type.value,
+        category: form.category.value,
+        aided: form.aided.value,
+        address: form.address.value,
+        city: form.city.value,
+        state: form.state.value,
+        pincode: form.pincode.value,
+        principal_name: form.principal_name.value,
+        phone: form.phone.value,
+        email: form.email.value,
+        code: form.code.value,
+        password: form.password.value
+      };
+
+      const msgBox = document.getElementById('responseMsg');
+      msgBox.style.display = "none";
+      msgBox.classList.remove("error");
+
+      fetch('https://edupredict-l9eg.onrender.com/api/colleges/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(resp => {
+        msgBox.style.display = "block";
+        if(resp.message) {
+          msgBox.textContent = resp.message;
+          msgBox.classList.remove("error");
+          form.reset();
+        } else if(resp.error) {
+          msgBox.textContent = 'Error: ' + resp.error;
+          msgBox.classList.add("error");
+        } else {
+          msgBox.textContent = 'Unknown server response.';
+          msgBox.classList.add("error");
+        }
+      })
+      .catch(() => {
+        msgBox.style.display = "block";
+        msgBox.textContent = "Network/server error. Please try again.";
+        msgBox.classList.add("error");
+      });
+    });
+  </script>
 </body>
 </html>

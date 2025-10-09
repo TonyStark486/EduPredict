@@ -16,3 +16,8 @@ function App() {
 }
 
 export default App;
+
+
+import RegisterCollegeForm from './RegisterCollegeForm';
+// ...
+<RegisterCollegeForm />
