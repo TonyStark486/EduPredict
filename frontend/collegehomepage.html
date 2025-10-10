@@ -512,6 +512,18 @@
   </footer>
 
   <script>
+    if (res.ok) {
+      localStorage.setItem('collegedata', JSON.stringify(data));
+      window.location.href = 'collegehomepage.html';
+    }
+
+    const collegedata = JSON.parse(localStorage.getItem('collegedata'));
+    if (!collegedata) {
+      window.location.href = 'login/college.html'; // Redirect to login
+    } else {
+    // Use collegeData fields to populate dashboard elements
+    }
+
     // Sidebar Toggle for small screens
     const menuToggleBtn = document.getElementById('menuToggleBtn');
     const sidebar = document.getElementById('sidebar');

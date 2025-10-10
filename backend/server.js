@@ -56,11 +56,11 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 app.post('/api/college/login', async (req, res) => {
   try {
     const { code, email, password } = req.body;
-
     if (!code || !email || !password) {
       return res.status(400).json({ error: 'Missing required fields.' });
     }
 
+    // Check if college exists by code and email
     const result = await pool.query(
       'SELECT * FROM colleges WHERE code = $1 AND email = $2',
       [code, email]
@@ -71,11 +71,13 @@ app.post('/api/college/login', async (req, res) => {
     }
 
     const college = result.rows[0];
-    const validPassword = await bcrypt.compare(password, college.password_hash);
-    if (!validPassword) {
+    // Verify password using bcrypt
+    const valid = await bcrypt.compare(password, college.password_hash);
+    if (!valid) {
       return res.status(401).json({ error: 'Invalid password.' });
     }
 
+    // Remove the password hash from the returned college object
     const { password_hash, ...collegeData } = college;
     res.json(collegeData);
   } catch (err) {
