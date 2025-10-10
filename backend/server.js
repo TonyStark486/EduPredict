@@ -38,9 +38,9 @@ app.post('/api/colleges/register', async (req, res) => {
   } catch (err) {
     if (err.code === '23505') {
       res.status(409).json({ error: 'College code or email already exists.' });
-    // } else {
-    //   console.error('Registration error:', err);
-    //   res.status(500).json({ error: 'Server error' });
+    } else {
+      console.error('Registration error:', err);
+      res.status(500).json({ error: 'Server error' });
     }
   }
 });
@@ -51,3 +51,35 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+//server connection for login page
+app.post('/api/college/login', async (req, res) => {
+  try {
+    const { code, email, password } = req.body;
+
+    if (!code || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields.' });
+    }
+
+    const result = await pool.query(
+      'SELECT * FROM colleges WHERE code = $1 AND email = $2',
+      [code, email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid college code or email.' });
+    }
+
+    const college = result.rows[0];
+    const validPassword = await bcrypt.compare(password, college.password_hash);
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Invalid password.' });
+    }
+
+    const { password_hash, ...collegeData } = college;
+    res.json(collegeData);
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
