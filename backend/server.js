@@ -38,9 +38,9 @@ app.post('/api/colleges/register', async (req, res) => {
   } catch (err) {
     if (err.code === '23505') {
       res.status(409).json({ error: 'College code or email already exists.' });
-    } else {
-      console.error('Registration error:', err);
-      res.status(500).json({ error: 'Server error' });
+    // } else {
+    //   console.error('Registration error:', err);
+    //   res.status(500).json({ error: 'Server error' });
     }
   }
 });
