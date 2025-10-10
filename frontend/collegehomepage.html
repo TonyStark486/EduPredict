@@ -22,7 +22,6 @@
       flex-direction: column;
     }
 
-    /* ===== HEADER ===== */
     header {
       display: flex;
       justify-content: space-between;
@@ -76,7 +75,6 @@
       background: #1dd1a1;
     }
 
-    /* Toggle button for Sidebar on small screens */
     #menuToggleBtn {
       display: none;
       background: #10ac84;
@@ -92,7 +90,6 @@
       background: #1dd1a1;
     }
 
-    /* ===== CONTAINER ===== */
     .container {
       display: flex;
       min-height: calc(100vh - 70px);
@@ -102,7 +99,6 @@
       gap: 25px;
     }
 
-    /* ===== SIDEBAR ===== */
     .sidebar {
       flex: 0 0 250px;
       background: rgba(0, 0, 0, 0.95);
@@ -134,12 +130,11 @@
 
     .sidebar a:hover,
     .sidebar a.active {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255, 255, 255, 0.15);
       border-left: 4px solid #10ac84;
       color: #10ac84;
     }
 
-    /* ===== MAIN CONTENT ===== */
     main {
       flex: 1;
       display: flex;
@@ -147,7 +142,6 @@
       gap: 25px;
     }
 
-    /* Top Section with Chart and Notifications */
     .top-section {
       display: flex;
       gap: 30px;
@@ -183,7 +177,6 @@
       width: 100%;
     }
 
-    /* Pie Chart Legend next to chart */
     .chart-wrapper {
       display: flex;
       align-items: center;
@@ -216,7 +209,6 @@
       display: inline-block;
     }
 
-    /* ===== STUDENT SUMMARY ===== */
     .summary-section {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -253,7 +245,6 @@
       color: #10ac84;
     }
 
-    /* ===== QUICK ACTIONS ===== */
     .quick-actions {
       background: rgba(255,255,255,0.12);
       backdrop-filter: blur(8px);
@@ -287,7 +278,6 @@
       box-shadow: 0 4px 15px #10ac84aa;
     }
 
-    /* ===== DEPARTMENTS ===== */
     .departments {
       width: 100%;
       text-align: left;
@@ -357,7 +347,6 @@
       text-decoration: underline;
     }
 
-    /* ===== FOOTER ===== */
     footer {
       text-align: center;
       padding: 20px;
@@ -367,7 +356,6 @@
       margin-top: auto;
     }
 
-    /* ===== MEDIA QUERIES ===== */
     @media (max-width: 900px) {
       .container {
         flex-direction: column;
@@ -391,7 +379,6 @@
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
   <header>
     <div style="display: flex; align-items: center;">
       <button id="menuToggleBtn" aria-label="Toggle Menu">☰ Menu</button>
@@ -407,7 +394,6 @@
 
   <div class="container">
 
-    <!-- ===== SIDEBAR ===== -->
     <nav class="sidebar" id="sidebar" aria-label="Sidebar navigation">
       <a href="collegehomepage.html" class="active">🏠 Home</a>
       <a href="collegedepartments.html">🏛️ Departments</a>
@@ -418,7 +404,6 @@
       <a href="#">📞 Contact</a>
     </nav>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <main>
       <section class="top-section">
         <div class="chart-box">
@@ -512,46 +497,14 @@
   </footer>
 
   <script>
-    if (res.ok) {
-      localStorage.setItem('collegedata', JSON.stringify(data));
-      window.location.href = 'collegehomepage.html';
-    }
-
-    const collegedata = JSON.parse(localStorage.getItem('collegedata'));
-    if (!collegedata) {
-      window.location.href = 'login/college.html'; // Redirect to login
-    } else {
-    // Use collegeData fields to populate dashboard elements
-    }
-
-    // Sidebar Toggle for small screens
-    const menuToggleBtn = document.getElementById('menuToggleBtn');
-    const sidebar = document.getElementById('sidebar');
-    menuToggleBtn.onclick = () => sidebar.classList.toggle('hidden');
-
-    // Toggle Years list visibility + aria-expanded attributes
-    function toggleYears(id) {
-      const list = document.getElementById(id);
-      const isVisible = list.style.display === "block";
-      list.style.display = isVisible ? "none" : "block";
-
-      // Update aria attributes for accessibility
-      const deptButton = document.querySelector(`.department[aria-controls="${id}"]`);
-      if(deptButton) {
-        deptButton.setAttribute('aria-expanded', !isVisible);
-      }
-      list.setAttribute('aria-hidden', isVisible);
-    }
-
-    // Load college data from localStorage and update dashboard
+    // Utility functions for safe access
     const safeString = (val) => val && val.trim() !== '' ? val : 'N/A';
     const safeNumber = (val) => Number.isFinite(val) ? val : 0;
 
     const collegeData = JSON.parse(localStorage.getItem('collegeData'));
-
     if (!collegeData) {
       alert('Please login first.');
-      window.location.href = 'college_login.html';
+      window.location.href = 'login/college.html';
     } else {
       document.getElementById('collegeName').textContent = safeString(collegeData.name);
       document.getElementById('totalStudents').textContent = safeNumber(collegeData.total_students);
@@ -592,7 +545,24 @@
         }
       });
     }
-  </script>
 
+    // Sidebar Toggle for small screens
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    const sidebar = document.getElementById('sidebar');
+    menuToggleBtn.onclick = () => sidebar.classList.toggle('hidden');
+
+    // Toggle Years list visibility + aria-expanded attributes
+    function toggleYears(id) {
+      const list = document.getElementById(id);
+      const isVisible = list.style.display === "block";
+      list.style.display = isVisible ? "none" : "block";
+
+      const deptButton = document.querySelector(`.department[aria-controls="${id}"]`);
+      if(deptButton) {
+        deptButton.setAttribute('aria-expanded', !isVisible);
+      }
+      list.setAttribute('aria-hidden', isVisible);
+    }
+  </script>
 </body>
 </html>
