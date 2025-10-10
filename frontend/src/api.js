@@ -9,3 +9,9 @@ fetch(`${API_URL}/api/login`, {
 })
 .then(res => res.json())
 .then(data => { /* handle response */ });
+
+fetch('/api/college/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ code, email, password }),
+});

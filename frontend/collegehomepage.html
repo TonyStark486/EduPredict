@@ -397,12 +397,11 @@
       <button id="menuToggleBtn" aria-label="Toggle Menu">☰ Menu</button>
       <div class="college-brand" id="menuBtn" tabindex="0">
         <img src="collegelogo.png" alt="College Logo" />
-        <h1>Government College of Engineering, Karad</h1>
+        <h1 id="collegeName">Government College of Engineering, Karad</h1>
       </div>
     </div>
     <div class="header-right">
       <a href="editprofile.html" id="openeditmenu" class="edit-btn">✏️ Edit Profile</a>
-      <button class=""></button>
     </div>
   </header>
 
@@ -427,37 +426,37 @@
           <div class="chart-wrapper">
             <canvas id="studentChart" width="280" height="280"></canvas>
             <div class="chart-legend">
-              <div class="legend-item"><span class="legend-color" style="background:#2e86de"></span>Total Students (500)</div>
-              <div class="legend-item"><span class="legend-color" style="background:#ee5253"></span>At Risk (60)</div>
-              <div class="legend-item"><span class="legend-color" style="background:#ff9f43"></span>Dropout (15)</div>
-              <div class="legend-item"><span class="legend-color" style="background:#10ac84"></span>Saved (425)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#2e86de"></span>Total Students (<span id="totalStudents">0</span>)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#ee5253"></span>At Risk (<span id="atRiskStudents">0</span>)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#ff9f43"></span>Dropout (<span id="dropoutStudents">0</span>)</div>
+              <div class="legend-item"><span class="legend-color" style="background:#10ac84"></span>Saved (<span id="savedStudents">0</span>)</div>
             </div>
           </div>
         </div>
 
         <div class="notification-box" aria-live="polite" aria-atomic="true">
           <h2>Notifications Sent</h2>
-          <div class="notif" role="alert">📩 To Parents: <strong>120</strong></div>
-          <div class="notif" role="alert">👩‍🏫 To Teachers: <strong>85</strong></div>
+          <div class="notif" role="alert">📩 To Parents: <strong id="toParents">0</strong></div>
+          <div class="notif" role="alert">👩‍🏫 To Teachers: <strong id="toTeachers">0</strong></div>
         </div>
       </section>
 
       <section class="summary-section" aria-label="Student Summary">
         <div class="summary-card" tabindex="0">
           <h3>Total Students</h3>
-          <p>500</p>
+          <p id="summaryTotalStudents">0</p>
         </div>
         <div class="summary-card" tabindex="0">
           <h3>At Risk Students</h3>
-          <p>60</p>
+          <p id="summaryAtRiskStudents">0</p>
         </div>
         <div class="summary-card" tabindex="0">
           <h3>Dropout Students</h3>
-          <p>15</p>
+          <p id="summaryDropoutStudents">0</p>
         </div>
         <div class="summary-card" tabindex="0">
           <h3>Saved Students</h3>
-          <p>425</p>
+          <p id="summarySavedStudents">0</p>
         </div>
       </section>
 
@@ -532,29 +531,55 @@
       list.setAttribute('aria-hidden', isVisible);
     }
 
-    // Pie Chart using Chart.js
-    const ctx = document.getElementById('studentChart').getContext('2d');
+    // Load college data from localStorage and update dashboard
+    const safeString = (val) => val && val.trim() !== '' ? val : 'N/A';
+    const safeNumber = (val) => Number.isFinite(val) ? val : 0;
 
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: ['Total Students', 'At Risk', 'Dropout', 'Saved'],
-        datasets: [{
-          data: [500, 60, 15, 425],
-          backgroundColor: ['#2e86de', '#ee5253', '#ff9f43', '#10ac84'],
-          borderWidth: 1,
-          borderColor: '#fff',
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: true, mode: 'nearest' }
+    const collegeData = JSON.parse(localStorage.getItem('collegeData'));
+
+    if (!collegeData) {
+      alert('Please login first.');
+      window.location.href = 'college_login.html';
+    } else {
+      document.getElementById('collegeName').textContent = safeString(collegeData.name);
+      document.getElementById('totalStudents').textContent = safeNumber(collegeData.total_students);
+      document.getElementById('atRiskStudents').textContent = safeNumber(collegeData.at_risk_students);
+      document.getElementById('dropoutStudents').textContent = safeNumber(collegeData.dropout_students);
+      document.getElementById('savedStudents').textContent = safeNumber(collegeData.saved_students);
+      document.getElementById('toParents').textContent = safeNumber(collegeData.notifications_to_parents);
+      document.getElementById('toTeachers').textContent = safeNumber(collegeData.notifications_to_teachers);
+      document.getElementById('summaryTotalStudents').textContent = safeNumber(collegeData.total_students);
+      document.getElementById('summaryAtRiskStudents').textContent = safeNumber(collegeData.at_risk_students);
+      document.getElementById('summaryDropoutStudents').textContent = safeNumber(collegeData.dropout_students);
+      document.getElementById('summarySavedStudents').textContent = safeNumber(collegeData.saved_students);
+
+      const ctx = document.getElementById('studentChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Total Students', 'At Risk', 'Dropout', 'Saved'],
+          datasets: [{
+            data: [
+              safeNumber(collegeData.total_students),
+              safeNumber(collegeData.at_risk_students),
+              safeNumber(collegeData.dropout_students),
+              safeNumber(collegeData.saved_students),
+            ],
+            backgroundColor: ['#2e86de', '#ee5253', '#ff9f43', '#10ac84'],
+            borderWidth: 1,
+            borderColor: '#fff',
+          }]
         },
-        animation: { duration: 1000, easing: 'easeOutQuart' },
-      }
-    });
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true, mode: 'nearest' }
+          },
+          animation: { duration: 1000, easing: 'easeOutQuart' },
+        }
+      });
+    }
   </script>
 
 </body>
