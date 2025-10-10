@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Registration | EduPredict</title>
+  <style>
+    /* ====== Theme Based on Index Page ====== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #b3b4b5 100%);
+      color: #0a0808;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+
+    .top-right a {
+      text-decoration: none;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .top-right a:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 20px;
+    }
+
+    .register-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 550px;
+      width: 100%;
+      color: #000;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .register-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: left;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    input {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      border: 2px solid #000;
+    }
+
+    button {
+      background: #000;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #10ac84;
+      transform: scale(1.05);
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .success { color: #007f00; }
+    .error { color: #b30000; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #eee;
+      background: #000;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media(max-width:600px) {
+      .register-container {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">EduPredict</div>
+    <div class="top-right">
+      <a href="../index.html">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../help.html">Help</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="register-container">
+      <h2>🎓 Student Registration</h2>
+      <form id="studentRegisterForm">
+        <label>Student Full Name</label>
+        <input type="text" name="name" placeholder="Enter your full name" required>
+
+        <label>Roll Number</label>
+        <input type="text" name="roll_no" placeholder="Enter your roll number" required>
+
+        <label>Parent Name</label>
+        <input type="text" name="parent_name" placeholder="Enter your parent name" required>
+
+        <label>Parent Mobile Number</label>
+        <input type="text" name="parent_mobile" placeholder="Enter parent mobile no." required>
+
+        <label>Parent Email ID</label>
+        <input type="email" name="parent_email" placeholder="Enter parent email id" required>
+
+        <label>Student Email ID</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+
+        <label>Contact Number</label>
+        <input type="text" name="contact" placeholder="Enter your mobile number" required>
+
+        <label>College Code</label>
+        <input type="text" name="college_code" placeholder="Enter college code" required>
+
+        <label>Course</label>
+        <input type="text" name="course" placeholder="e.g., B.Tech IT" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Create a password" required>
+
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" placeholder="Confirm password" required>
+
+        <button type="submit">Register</button>
+      </form>
+
+      <div class="message" id="statusMsg"></div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 EduPredict. All rights reserved.
+  </footer>
+
+  <script>
+    const form = document.getElementById("studentRegisterForm");
+    const msg = document.getElementById("statusMsg");
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      msg.textContent = "⏳ Processing...";
+      msg.className = "message";
+
+      const formData = Object.fromEntries(new FormData(form));
+
+      try {
+        const res = await fetch("https://your-backend-url/api/students/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.textContent = data.message || "✅ Registration successful!";
+          msg.classList.add("success");
+          form.reset();
+        } else {
+          msg.textContent = data.error || "⚠️ Registration failed.";
+          msg.classList.add("error");
+        }
+      } catch (err) {
+        console.error(err);
+        msg.textContent = "❌ Something went wrong. Please try again.";
+        msg.classList.add("error");
+      }
+    };
+  </script>
+</body>
+</html>
