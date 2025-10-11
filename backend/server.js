@@ -100,6 +100,7 @@ app.post('/api/college/login', async (req, res) => {
 });
 
 
+
 // ====================================================
 // 🎓 STUDENT REGISTRATION & LOGIN (Newly Added)
 // ====================================================
