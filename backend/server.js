@@ -34,6 +34,7 @@ app.get('/', (req, res) => {
 // 🏫 COLLEGE REGISTRATION & LOGIN (Already Working)
 // ====================================================
 app.post('/api/colleges/register', async (req, res) => {
+  const aided = req.body.aided === 'true';
   try {
     const {
       name, code, address, city, state, pincode,
@@ -65,8 +66,6 @@ app.post('/api/colleges/register', async (req, res) => {
     }
   }
 });
-
-const aided = req.body.aided === 'true';
 
 app.post('/api/college/login', async (req, res) => {
   try {
