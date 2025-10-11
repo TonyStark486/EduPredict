@@ -151,7 +151,7 @@
     errorMsg.textContent = '';
 
     try {
-      const res = await fetch('/api/college/login', {
+      const res = await fetch('https://edupredict-l9eg.onrender.com/api/college/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, email, password })
