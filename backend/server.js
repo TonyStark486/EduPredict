@@ -10,7 +10,7 @@ const app = express();
 // 🔹 PostgreSQL Connection
 // ==============================
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || "postgresql://postgres:your_password@localhost:5432/edupredict"
+  connectionString: process.env.DATABASE_URL || "postgresql://database_8suu_user:JhWakO3g5BhqleKSRSd87yFw3tOpf5xF@dpg-d3imcvadbo4c73fs18rg-a.oregon-postgres.render.com/database_8suu?sslmode=require"
   
 });
 

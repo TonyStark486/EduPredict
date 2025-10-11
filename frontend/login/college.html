@@ -132,8 +132,7 @@
       <input type="text" id="code" placeholder="College Code" required />
       <input type="email" id="email" placeholder="Email Id" required />
       <input type="password" id="password" placeholder="Password" required />
-      <a href="collegehomepage.html">🏛️ Departments</a>
-      <!-- <button type="submit">Login</button> -->
+      <button type="submit">Login</button>
     </form>
     <p id="errorMessage"></p>
   </div>
@@ -160,7 +159,7 @@
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('collegeData', JSON.stringify(data));
-        window.location.href = 'collegehomepage.html';
+        window.location.href = '../collegehomepage.html';
       } else {
         errorMsg.textContent = data.error || 'Login failed';
       }
