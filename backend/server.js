@@ -66,6 +66,9 @@ app.post('/api/colleges/register', async (req, res) => {
   }
 });
 
+const aided = (form.aided.value === 'true');
+
+
 app.post('/api/college/login', async (req, res) => {
   try {
     const { code, email, password } = req.body;
