@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>College Registration - EduPredict</title>
   <style>
     * {
@@ -154,137 +154,137 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>EduPredict</h1>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Help</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <main>
-    <div class="form-container">
-      <h2>College Registration Form</h2>
-      <form id="collegeRegistrationForm" autocomplete="off">
-        <!-- College Details -->
-        <label for="collegeName">College Name<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="collegeName" name="name" placeholder="Enter full college name" required/>
+<header>
+  <h1>EduPredict</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Help</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</header>
 
-        <label for="collegeType">College Type<span style="color:#ff6b6b;">*</span></label>
-        <select id="collegeType" name="college_type" required>
-          <option value="">-- Select Type --</option>
-          <option value="autonomous">Autonomous</option>
-          <option value="non-autonomous">Non-Autonomous</option>
-        </select>
+<main>
+  <div class="form-container">
+    <h2>College Registration Form</h2>
+    <form id="collegeRegistrationForm" autocomplete="off">
+      <label for="collegeName">College Name<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="collegeName" name="name" placeholder="Enter full college name" required/>
 
-        <label for="category">Category<span style="color:#ff6b6b;">*</span></label>
-        <select id="category" name="category" required>
-          <option value="">-- Select Category --</option>
-          <option value="institute">Institute</option>
-          <option value="university">University</option>
-        </select>
+      <label for="collegeType">College Type<span style="color:#ff6b6b;">*</span></label>
+      <select id="collegeType" name="college_type" required>
+        <option value="">-- Select Type --</option>
+        <option value="autonomous">Autonomous</option>
+        <option value="non-autonomous">Non-Autonomous</option>
+      </select>
 
-        <label for="aided">Aided / Non-Aided<span style="color:#ff6b6b;">*</span></label>
-        <select id="aided" name="aided" required>
-          <option value="">-- Select --</option>
-          <option value="true">Aided</option>
-          <option value="false">Non-Aided</option>
-          </select>
+      <label for="category">Category<span style="color:#ff6b6b;">*</span></label>
+      <select id="category" name="category" required>
+        <option value="">-- Select Category --</option>
+        <option value="institute">Institute</option>
+        <option value="university">University</option>
+      </select>
 
-        <!-- Address Details -->
-        <label for="address">Address Line 1<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="address" name="address" placeholder="Street / Area / Road" required/>
+      <label for="aided">Aided / Non-Aided<span style="color:#ff6b6b;">*</span></label>
+      <select id="aided" name="aided" required>
+        <option value="">-- Select --</option>
+        <option value="true">Aided</option>
+        <option value="false">Non-Aided</option>
+      </select>
 
-        <label for="city">City<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="city" name="city" placeholder="Enter city name" required/>
+      <label for="address">Address Line 1<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="address" name="address" placeholder="Street / Area / Road" required/>
 
-        <label for="state">State<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="state" name="state" placeholder="Enter state name" required/>
+      <label for="city">City<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="city" name="city" placeholder="Enter city name" required/>
 
-        <label for="pincode">Pincode<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="pincode" name="pincode" pattern="[0-9]{6}" placeholder="Enter 6-digit pincode" required/>
+      <label for="state">State<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="state" name="state" placeholder="Enter state name" required/>
 
-        <!-- Principal Details -->
-        <label for="personName">Principal Name<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="personName" name="principal_name" placeholder="Enter full name" required/>
+      <label for="pincode">Pincode<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="pincode" name="pincode" pattern="[0-9]{6}" placeholder="Enter 6-digit pincode" required/>
 
-        <label for="phone">Phone<span style="color:#ff6b6b;">*</span></label>
-        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="Enter 10-digit phone number" required/>
+      <label for="personName">Principal Name<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="personName" name="principal_name" placeholder="Enter full name" required/>
 
-        <label for="email">Email Address<span style="color:#ff6b6b;">*</span></label>
-        <input type="email" id="email" name="email" placeholder="Enter official email" required/>
+      <label for="phone">Phone<span style="color:#ff6b6b;">*</span></label>
+      <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" placeholder="Enter 10-digit phone number" required/>
 
-        <label for="code">College Code<span style="color:#ff6b6b;">*</span></label>
-        <input type="text" id="code" name="code" placeholder="Unique college code" required/>
+      <label for="email">Email Address<span style="color:#ff6b6b;">*</span></label>
+      <input type="email" id="email" name="email" placeholder="Enter official email" required/>
 
-        <label for="password">Password<span style="color:#ff6b6b;">*</span></label>
-        <input type="password" id="password" name="password" placeholder="Create a password" required/>
+      <label for="code">College Code<span style="color:#ff6b6b;">*</span></label>
+      <input type="text" id="code" name="code" placeholder="Unique college code" required/>
 
-        <button type="submit" class="btn-submit">Submit Registration</button>
-      </form>
-      <div id="responseMsg" class="response-message" style="display:none"></div>
-    </div>
-  </main>
+      <label for="password">Password<span style="color:#ff6b6b;">*</span></label>
+      <input type="password" id="password" name="password" placeholder="Create a password" required/>
 
-  <footer>
-    &copy; 2025 EduPredict. All rights reserved.
-  </footer>
+      <button type="submit" class="btn-submit">Submit Registration</button>
+    </form>
+    <div id="responseMsg" class="response-message" style="display:none"></div>
+  </div>
+</main>
 
-  <script>
-    document.getElementById('collegeRegistrationForm').addEventListener('submit', function(event) {
-      event.preventDefault();
+<footer>
+  &copy; 2025 EduPredict. All rights reserved.
+</footer>
 
-      const form = event.target;
-      const data = {
-        name: form.name.value,
-        college_type: form.college_type.value,
-        category: form.category.value,
-        aided: aided,
-        address: form.address.value,
-        city: form.city.value,
-        state: form.state.value,
-        pincode: form.pincode.value,
-        principal_name: form.principal_name.value,
-        phone: form.phone.value,
-        email: form.email.value,
-        code: form.code.value,
-        password: form.password.value
-      };
+<script>
+  document.getElementById('collegeRegistrationForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-      const msgBox = document.getElementById('responseMsg');
-      msgBox.style.display = "none";
-      msgBox.classList.remove("error");
+    const form = event.target;
+    const aidedBoolean = form.aided.value === 'true'; // convert string to boolean
 
-      fetch('https://edupredict-l9eg.onrender.com/api/colleges/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-      .then(res => res.json())
-      .then(resp => {
-        msgBox.style.display = "block";
-        if(resp.message) {
-          msgBox.textContent = resp.message;
-          msgBox.classList.remove("error");
-          form.reset();
-        } else if(resp.error) {
-          msgBox.textContent = 'Error: ' + resp.error;
-          msgBox.classList.add("error");
-        } else {
-          msgBox.textContent = 'Unknown server response.';
-          msgBox.classList.add("error");
-        }
-      })
-      .catch(() => {
-        msgBox.style.display = "block";
-        msgBox.textContent = "Network/server error. Please try again.";
-        msgBox.classList.add("error");
-      });
+    const data = {
+      name: form.name.value,
+      college_type: form.college_type.value,
+      category: form.category.value,
+      aided: aidedBoolean,
+      address: form.address.value,
+      city: form.city.value,
+      state: form.state.value,
+      pincode: form.pincode.value,
+      principal_name: form.principal_name.value,
+      phone: form.phone.value,
+      email: form.email.value,
+      code: form.code.value,
+      password: form.password.value
+    };
+
+    const msgBox = document.getElementById('responseMsg');
+    msgBox.style.display = 'none';
+    msgBox.classList.remove('error');
+
+    fetch('https://edupredict-l9eg.onrender.com/api/colleges/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(resp => {
+      msgBox.style.display = 'block';
+      if (resp.message) {
+        msgBox.textContent = resp.message;
+        msgBox.classList.remove('error');
+        form.reset();
+      } else if (resp.error) {
+        msgBox.textContent = 'Error: ' + resp.error;
+        msgBox.classList.add('error');
+      } else {
+        msgBox.textContent = 'Unknown server response.';
+        msgBox.classList.add('error');
+      }
+    })
+    .catch(() => {
+      msgBox.style.display = 'block';
+      msgBox.textContent = 'Network/server error. Please try again.';
+      msgBox.classList.add('error');
     });
-  </script>
+  });
+</script>
 </body>
 </html>
