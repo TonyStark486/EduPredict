@@ -209,10 +209,13 @@
       const formData = new FormData(form);
 
       try {
-        const res = await fetch("/register/student", {
-          method: "POST",
-          body: formData
-        });
+       const backendUrl = 'https://edupredict-l9eg.onrender.com';
+
+        const res = await fetch(`${backendUrl}/register/student`, {
+        method: "POST",
+        body: formData
+      });
+
         const data = await res.json();
 
         if (res.ok) {
