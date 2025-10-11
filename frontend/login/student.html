@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Login | EduPredict</title>
+  <style>
+    /* ====== Reuse Registration Page Theme ====== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #b3b4b5 100%);
+      color: #0a0808;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 50px;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+
+    .top-right a {
+      text-decoration: none;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .top-right a:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px 20px;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 100%;
+      color: #000;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .login-container h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #000;
+    }
+
+    .login-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .login-container label {
+      font-weight: 600;
+    }
+
+    .login-container input {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .login-container input:focus {
+      border: 2px solid #000;
+    }
+
+    .login-container button {
+      background: #000;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-container button:hover {
+      background: #10ac84;
+      transform: scale(1.05);
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .success { color: #007f00; }
+    .error { color: #b30000; }
+
+    .login-links {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .login-links a {
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 5px;
+      transition: all 0.3s ease;
+    }
+
+    .login-links a:hover {
+      color: #10ac84;
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      color: #eee;
+      background: #000;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media(max-width:600px) {
+      .login-container {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">EduPredict</div>
+    <div class="top-right">
+      <a href="../index.html">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../help.html">Help</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="login-container">
+      <h2>🔑 Student Login</h2>
+      <form id="studentLoginForm">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required>
+
+        <button type="submit">Login</button>
+      </form>
+
+      <div class="login-links">
+        <a href="register.html">Create Account</a> |
+        <a href="forgot-password.html">Forgot Password?</a>
+      </div>
+
+      <div class="message" id="statusMsg"></div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 EduPredict. All rights reserved.
+  </footer>
+
+  <script>
+    const form = document.getElementById("studentLoginForm");
+    const msg = document.getElementById("statusMsg");
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      msg.textContent = "⏳ Logging in...";
+      msg.className = "message";
+
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch("/login/student", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.textContent = data.message;
+          msg.classList.add("success");
+          form.reset();
+          // Optionally redirect to dashboard
+          // window.location.href = '/dashboard';
+        } else {
+          msg.textContent = data.message;
+          msg.classList.add("error");
+        }
+      } catch (err) {
+        msg.textContent = "❌ Something went wrong. Please try again.";
+        msg.classList.add("error");
+      }
+    };
+  </script>
+</body>
+</html>

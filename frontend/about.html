@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Student Success Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 50%, #d3d3d3 100%);
+            color: #333333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        header p {
+            font-size: 1.3em;
+            color: #555555;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mission-section {
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .mission-section h2 {
+            font-size: 2.2em;
+            color: #34495e;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mission-section p {
+            font-size: 1.1em;
+            color: #666666;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .problem-solution {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #e8e8e8;
+            animation: slideUp 1s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #3498db;
+        }
+
+        .card h3 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-icon {
+            font-size: 1.5em;
+        }
+
+        .card p {
+            color: #555555;
+            font-size: 1.05em;
+            margin-bottom: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .feature-box {
+            background: linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeIn 2s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-box:hover {
+            border-color: #3498db;
+            background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-box h4 {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .feature-box p {
+            color: #666666;
+            font-size: 0.95em;
+        }
+
+        .impact-section {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 50px 0;
+            box-shadow: 0 15px 50px rgba(52, 152, 219, 0.3);
+            animation: pulse 3s infinite;
+        }
+
+        .impact-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .impact-section p {
+            font-size: 1.2em;
+            color: #ecf0f1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            gap: 30px;
+        }
+
+        .stat-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #f39c12;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #ecf0f1;
+            margin-top: 10px;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            border-radius: 15px;
+            margin-top: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(52, 152, 219, 0.5);
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+        }
+
+        .how-it-works {
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            padding: 50px;
+            border-radius: 15px;
+            margin: 50px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8e8e8;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.2em;
+            color: #34495e;
+            margin-bottom: 30px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            border-color: #3498db;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .step h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .step p {
+            color: #666666;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .problem-solution {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Student Success Platform</h1>
+            <p>Empowering Educators to Reduce Dropout Rates Through Early Intervention & Data-Driven Insights</p>
+        </header>
+
+        <div class="mission-section">
+            <h2>Our Mission</h2>
+            <p>We believe every student deserves a chance to succeed. Our platform transforms scattered data into actionable insights, enabling educators to identify at-risk students early and intervene before it's too late.</p>
+        </div>
+
+        <div class="problem-solution">
+            <div class="card">
+                <h3><span class="card-icon">⚠️</span> The Challenge</h3>
+                <p>By the time term-end marks reveal failures, many struggling students have already disengaged beyond recovery.</p>
+                <p>Critical data—attendance, test scores, fee payments—exists in separate spreadsheets with no unified view. Counselors lack early warning signals when students slip in multiple areas simultaneously.</p>
+                <p>Commercial analytics platforms are too expensive and complex for most public institutions to maintain.</p>
+            </div>
+
+            <div class="card">
+                <h3><span class="card-icon">💡</span> Our Solution</h3>
+                <p>A consolidated dashboard that automatically ingests attendance, assessment scores, and student-related data from existing sources.</p>
+                <p>Clear, rule-based thresholds powered by machine learning identify at-risk students weeks before failure becomes inevitable.</p>
+                <p>Intuitive visual format with regular notifications to mentors and guardians ensures timely, data-driven intervention—no fresh budget required.</p>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-size: 2.5em; color: #34495e; margin: 50px 0 30px;">Key Features</h2>
+
+        <div class="features-grid">
+            <div class="feature-box">
+                <span class="feature-icon">📊</span>
+                <h4>Data Fusion</h4>
+                <p>Merges attendance, grades, and payment records into one comprehensive view</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">🚨</span>
+                <h4>Early Risk Detection</h4>
+                <p>Machine learning algorithms identify struggling students before failure</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">🎨</span>
+                <h4>Visual Dashboards</h4>
+                <p>Color-coded risk indicators make it easy to spot problems at a glance</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">🔔</span>
+                <h4>Automated Alerts</h4>
+                <p>Regular notifications to mentors and guardians on a predictable schedule</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">⚙️</span>
+                <h4>Simple Configuration</h4>
+                <p>Easy to set up with minimal training required for educators</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">🤝</span>
+                <h4>Educator Empowerment</h4>
+                <p>Supports teacher judgment rather than replacing it</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">📈</span>
+                <h4>Progress Tracking</h4>
+                <p>Monitor intervention effectiveness and student improvement over time</p>
+            </div>
+
+            <div class="feature-box">
+                <span class="feature-icon">💰</span>
+                <h4>Budget-Friendly</h4>
+                <p>No expensive commercial platforms—uses existing institutional data</p>
+            </div>
+        </div>
+
+        <div class="impact-section">
+            <h2>The Impact We're Making</h2>
+            <p>By focusing on data fusion and timely alerts rather than complex algorithms, we help institutions intervene early and reduce dropout rates without requiring additional budget allocations.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Early Risk Detection</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3-4</span>
+                    <span class="stat-label">Weeks Earlier Intervention</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Data Integration</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="how-it-works">
+            <h2>How It Works</h2>
+            
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1️⃣</div>
+                    <h4>Collect Data</h4>
+                    <p>Automatically ingest existing spreadsheets and databases</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2️⃣</div>
+                    <h4>Analyze Patterns</h4>
+                    <p>ML algorithms detect risk indicators across multiple metrics</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3️⃣</div>
+                    <h4>Visualize Risks</h4>
+                    <p>Dashboard highlights at-risk students with color-coded alerts</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4️⃣</div>
+                    <h4>Notify Stakeholders</h4>
+                    <p>Automated alerts sent to mentors and guardians</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2 style="font-size: 2.5em; color: #34495e; margin-bottom: 20px;">Ready to Make a Difference?</h2>
+            <p style="font-size: 1.2em; color: #666666; max-width: 700px; margin: 0 auto 30px;">Join us in transforming how institutions support student success. Together, we can reduce dropout rates and empower every student to reach their full potential.</p>
+            <a href="#contact" class="cta-button">Get Started Today</a>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth scroll animation for feature boxes
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-box, .card, .step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Interactive hover effects
+        document.querySelectorAll('.feature-box').forEach(box => {
+            box.addEventListener('click', function() {
+                this.style.animation = 'pulse 0.5s';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 500);
+            });
+        });
+
+        // Smooth scrolling for CTA button
+        document.querySelector('.cta-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
