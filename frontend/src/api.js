@@ -1,28 +1,106 @@
-// src/api.js
-const backendUrl = "https://edupredict-l9eg.onrender.com";
+// src/auth.js
+const backendUrl = 'https://edupredict-l9eg.onrender.com';
 
-document.getElementById('loginForm').addEventListener('submit', async function(e) {
+// ==============================
+// 🔹 College Login
+// ==============================
+document.getElementById('collegeLoginForm')?.addEventListener('submit', async function(e) {
   e.preventDefault();
-  const code = document.getElementById('code').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const errorMsg = document.getElementById('errorMessage');
+
+  const code = document.getElementById('collegeCode').value.trim();
+  const email = document.getElementById('collegeEmail').value.trim();
+  const password = document.getElementById('collegePassword').value;
+  const errorMsg = document.getElementById('collegeErrorMessage');
   errorMsg.textContent = '';
 
   try {
-    const res = await fetch('${backendUrl}/api/college/login', {
+    const res = await fetch(`${backendUrl}/api/college/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, email, password })
     });
+
     const data = await res.json();
+
     if (res.ok) {
       localStorage.setItem('collegeData', JSON.stringify(data));
       window.location.href = 'collegehomepage.html';
     } else {
       errorMsg.textContent = data.error || 'Login failed';
     }
-  } catch {
+  } catch (error) {
+    console.error('College login error:', error);
+    errorMsg.textContent = 'Error connecting to server.';
+  }
+});
+
+// ==============================
+// 🔹 Student Login
+// ==============================
+document.getElementById('studentLoginForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('studentEmail').value.trim();
+  const password = document.getElementById('studentPassword').value;
+  const errorMsg = document.getElementById('studentErrorMessage');
+  errorMsg.textContent = '';
+
+  try {
+    const res = await fetch(`${backendUrl}/login/student`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem('studentData', JSON.stringify(data));
+      window.location.href = 'studenthomepage.html';
+    } else {
+      errorMsg.textContent = data.message || 'Login failed';
+    }
+  } catch (error) {
+    console.error('Student login error:', error);
+    errorMsg.textContent = 'Error connecting to server.';
+  }
+});
+
+// ==============================
+// 🔹 Student Registration
+// ==============================
+document.getElementById('studentRegisterForm')?.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('studentName').value.trim();
+  const email = document.getElementById('studentRegEmail').value.trim();
+  const contact = document.getElementById('studentContact').value.trim();
+  const college_code = document.getElementById('studentCollegeCode').value.trim();
+  const course = document.getElementById('studentCourse').value.trim();
+  const password = document.getElementById('studentRegPassword').value;
+  const confirm_password = document.getElementById('studentConfirmPassword').value;
+  const errorMsg = document.getElementById('studentRegErrorMessage');
+  errorMsg.textContent = '';
+
+  try {
+    const res = await fetch(`${backendUrl}/register/student`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, email, contact, college_code, course, password, confirm_password
+      })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert('✅ Registration successful! You can now login.');
+      window.location.href = 'studentlogin.html';
+    } else {
+      errorMsg.textContent = data.message || 'Registration failed';
+    }
+  } catch (error) {
+    console.error('Student registration error:', error);
     errorMsg.textContent = 'Error connecting to server.';
   }
 });
