@@ -66,8 +66,7 @@ app.post('/api/colleges/register', async (req, res) => {
   }
 });
 
-const aided = (form.aided.value === 'true');
-
+const aided = req.body.aided === 'true';
 
 app.post('/api/college/login', async (req, res) => {
   try {
