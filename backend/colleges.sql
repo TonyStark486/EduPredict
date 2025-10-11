@@ -14,3 +14,14 @@ CREATE TABLE colleges (
   aided VARCHAR(50),
   password_hash TEXT NOT NULL
 );
+
+CREATE TABLE students (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  contact VARCHAR(15),
+  college_code VARCHAR(20) NOT NULL,
+  course VARCHAR(50),
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
