@@ -13,8 +13,11 @@ const PORT = process.env.PORT || 5000;
 const corsOptions = {
   origin: [
     'https://edu-predict-sih.vercel.app',
+    'https://edupredict-l9eg.onrender.com',
     'http://localhost:3000',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'http://localhost:5500',
+    'http://127.0.0.1:5500'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
@@ -22,39 +25,67 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
-
 app.options('*', cors(corsOptions));
 app.use(express.json());
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-
-// Test endpoint
-app.get('/', (req, res) => {
-  res.json({ message: 'EduPredict Backend API is running!' });
-});
+const JWT_SECRET = process.env.JWT_SECRET || '8830862537';
 
 // ========================================
-// AUTHENTICATION MIDDLEWARE - MOVED HERE (BEFORE ADMIN ROUTES)
+// AUTHENTICATION MIDDLEWARE - FIXED
 // ========================================
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
+    console.log('❌ No token provided');
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ error: 'Invalid or expired token' });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('✅ Token decoded:', decoded);
+    
+    // Handle different token structures
+    if (decoded.college_code || decoded.collegeCode) {
+      req.college = {
+        college_code: decoded.college_code || decoded.collegeCode,
+        email: decoded.email,
+        name: decoded.name,
+        id: decoded.college_id || decoded.id
+      };
+    } else if (decoded.college) {
+      req.college = decoded.college;
+    } else {
+      req.college = {
+        college_code: decoded.code || decoded.collegeCode,
+        email: decoded.email,
+        name: decoded.name,
+        id: decoded.id
+      };
     }
-    req.user = decoded;
+    
+    console.log('✅ College data set:', req.college);
     next();
-  });
+  } catch (err) {
+    console.error('❌ Token verification failed:', err.message);
+    return res.status(403).json({ error: 'Invalid or expired token' });
+  }
 };
 
 // ========================================
-// ADMIN ROUTES
+// TEST ENDPOINT
+// ========================================
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'EduPredict Backend API is running!',
+    version: '1.0.0',
+    status: 'active'
+  });
+});
+
+// ========================================
+// ADMIN AUTHENTICATION
 // ========================================
 
 // Admin Login
@@ -66,7 +97,6 @@ app.post('/api/admin/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
-    // Check if admin exists
     const result = await pool.query(
       'SELECT * FROM admins WHERE email = $1',
       [email]
@@ -77,15 +107,12 @@ app.post('/api/admin/login', async (req, res) => {
     }
 
     const admin = result.rows[0];
-    
-    // Verify password
     const valid = await bcrypt.compare(password, admin.password_hash);
     
     if (!valid) {
       return res.status(401).json({ error: 'Invalid admin credentials' });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: admin.id, email: admin.email, role: 'admin' },
       JWT_SECRET,
@@ -106,10 +133,10 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-// Verify Admin Token (uses authenticateToken middleware)
+// Verify Admin Token
 app.get('/api/admin/verify', authenticateToken, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
+    if (req.user && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Access denied' });
     }
 
@@ -138,7 +165,6 @@ app.post('/api/admin/setup', async (req, res) => {
       return res.status(400).json({ error: 'All fields required' });
     }
 
-    // Check if admin already exists
     const existing = await pool.query('SELECT * FROM admins WHERE email = $1', [email]);
     if (existing.rows.length > 0) {
       return res.status(400).json({ error: 'Admin already exists' });
@@ -166,7 +192,7 @@ app.post('/api/admin/setup', async (req, res) => {
 // ADMIN COLLEGE MANAGEMENT ROUTES
 // ========================================
 
-// Get all colleges (Admin only)
+// Get all colleges
 app.get('/api/admin/colleges', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -187,7 +213,7 @@ app.get('/api/admin/colleges', authenticateToken, async (req, res) => {
   }
 });
 
-// Get single college by ID (Admin only)
+// Get single college
 app.get('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -214,7 +240,7 @@ app.get('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Add new college (Admin only)
+// Add new college
 app.post('/api/admin/colleges', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -227,12 +253,10 @@ app.post('/api/admin/colleges', authenticateToken, async (req, res) => {
       category, aided, password 
     } = req.body;
 
-    // Validate required fields
     if (!name || !code || !email || !password) {
       return res.status(400).json({ error: 'Required fields missing' });
     }
 
-    // Check if code or email exists
     const existing = await pool.query(
       'SELECT * FROM colleges WHERE code = $1 OR email = $2',
       [code, email]
@@ -263,7 +287,7 @@ app.post('/api/admin/colleges', authenticateToken, async (req, res) => {
   }
 });
 
-// Update college (Admin only)
+// Update college
 app.put('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -277,7 +301,6 @@ app.put('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
       category, aided 
     } = req.body;
 
-    // Check if college exists
     const checkResult = await pool.query(
       'SELECT * FROM colleges WHERE id = $1',
       [id]
@@ -287,7 +310,6 @@ app.put('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'College not found' });
     }
 
-    // Check if email already exists for another college
     const emailCheck = await pool.query(
       'SELECT * FROM colleges WHERE email = $1 AND id != $2',
       [email, id]
@@ -318,7 +340,7 @@ app.put('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Delete college (Admin only)
+// Delete college
 app.delete('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -327,7 +349,6 @@ app.delete('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
 
     const { id } = req.params;
 
-    // Check if college exists
     const checkResult = await pool.query(
       'SELECT * FROM colleges WHERE id = $1',
       [id]
@@ -346,7 +367,7 @@ app.delete('/api/admin/colleges/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Get college statistics (Admin only)
+// Get admin statistics
 app.get('/api/admin/stats', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -371,8 +392,10 @@ app.get('/api/admin/stats', authenticateToken, async (req, res) => {
 });
 
 // ========================================
-// COLLEGE REGISTRATION
+// COLLEGE AUTHENTICATION
 // ========================================
+
+// College Registration
 app.post('/api/college/register', async (req, res) => {
   try {
     const { name, code, address, city, state, pincode, email, phone, principal_name, college_type, category, aided, password } = req.body;
@@ -402,20 +425,18 @@ app.post('/api/college/register', async (req, res) => {
   }
 });
 
-// ========================================
-// COLLEGE LOGIN
-// ========================================
+// College Login
 app.post('/api/college/login', async (req, res) => {
   try {
     console.log('📥 Login request:', req.body);
-    const { code, email, password } = req.body;
+    const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password required' });
     }
 
     const result = await pool.query(
-      'SELECT code, name, email, college_type, category, aided, address, city, state, pincode, phone, principal_name, password_hash FROM colleges WHERE email = $1',
+      'SELECT * FROM colleges WHERE email = $1',
       [email]
     );
     
@@ -426,7 +447,6 @@ app.post('/api/college/login', async (req, res) => {
     }
 
     const college = result.rows[0];
-    
     const valid = await bcrypt.compare(password, college.password_hash);
 
     if (!valid) {
@@ -434,7 +454,12 @@ app.post('/api/college/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { college_code: college.code, email: college.email, name: college.name },
+      { 
+        id: college.id,
+        college_code: college.code,
+        email: college.email,
+        name: college.name
+      },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -456,26 +481,457 @@ app.post('/api/college/login', async (req, res) => {
 });
 
 // ========================================
-// IMPORT COLLEGE DASHBOARD ROUTES
+// COLLEGE DASHBOARD ROUTES
 // ========================================
-const collegeDashboardRoutes = require('./routes/collegeDashboard');
-app.use('/api/college', collegeDashboardRoutes);
+
+// Get college statistics
+app.get('/api/college/stats', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const totalStudents = await pool.query(
+      'SELECT COUNT(*) FROM students WHERE college_code = $1',
+      [collegeCode]
+    );
+
+    const totalTeachers = await pool.query(
+      'SELECT COUNT(*) FROM teachers WHERE college_code = $1',
+      [collegeCode]
+    );
+
+    const totalDepartments = await pool.query(
+      'SELECT COUNT(*) FROM departments WHERE college_code = $1',
+      [collegeCode]
+    );
+
+    const atRiskStudents = await pool.query(
+      `SELECT COUNT(DISTINCT s.id) 
+       FROM students s
+       JOIN predictions p ON s.id = p.student_id
+       WHERE s.college_code = $1 
+       AND p.risk_level IN ('High', 'Medium')
+       AND p.created_at = (SELECT MAX(created_at) FROM predictions WHERE student_id = s.id)`,
+      [collegeCode]
+    );
+
+    res.json({
+      totalStudents: parseInt(totalStudents.rows[0].count) || 0,
+      totalTeachers: parseInt(totalTeachers.rows[0].count) || 0,
+      totalDepartments: parseInt(totalDepartments.rows[0].count) || 0,
+      atRiskStudents: parseInt(atRiskStudents.rows[0].count) || 0
+    });
+  } catch (err) {
+    console.error('Error fetching stats:', err);
+    res.status(500).json({ error: 'Failed to fetch statistics' });
+  }
+});
+
+// Get recent activities
+app.get('/api/college/recent-activities', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const activities = await pool.query(
+      `SELECT 
+        'student_added' as type,
+        s.name as student_name,
+        s.created_at as timestamp
+       FROM students s
+       WHERE s.college_code = $1
+       UNION ALL
+       SELECT 
+        'prediction_made' as type,
+        s.name as student_name,
+        p.created_at as timestamp
+       FROM predictions p
+       JOIN students s ON p.student_id = s.id
+       WHERE s.college_code = $1
+       ORDER BY timestamp DESC
+       LIMIT 10`,
+      [collegeCode]
+    );
+
+    res.json(activities.rows);
+  } catch (err) {
+    console.error('Error fetching activities:', err);
+    res.status(500).json({ error: 'Failed to fetch activities' });
+  }
+});
 
 // ========================================
-// Student Requests Routes
+// DEPARTMENT ROUTES - FIXED
 // ========================================
-const studentRequestsRoutes = require('./routes/studentRequests');
-app.use('/api/student-requests', studentRequestsRoutes);
+
+// Get all departments for a college
+app.get('/api/college/departments', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    console.log('📊 Fetching departments for college:', collegeCode);
+
+    const result = await pool.query(
+      `SELECT 
+        id, 
+        name, 
+        code,
+        hod_name,
+        status,
+        created_at,
+        (SELECT COUNT(*) FROM students WHERE department_id = departments.id) as student_count,
+        (SELECT COUNT(*) FROM teachers WHERE department_id = departments.id) as teacher_count
+       FROM departments
+       WHERE college_code = $1
+       ORDER BY name ASC`,
+      [collegeCode]
+    );
+
+    console.log(`✅ Found ${result.rows.length} departments`);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('❌ Error fetching departments:', err);
+    res.status(500).json({ error: 'Failed to fetch departments', message: err.message });
+  }
+});
+
+// Add a new department
+app.post('/api/college/departments', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const { name, code, hod, status } = req.body;
+
+    if (!name || !code) {
+      return res.status(400).json({ error: 'Department name and code are required' });
+    }
+
+    console.log('📊 Adding department:', { name, code, collegeCode });
+
+    // Check if department already exists
+    const existing = await pool.query(
+      'SELECT * FROM departments WHERE (name = $1 OR code = $2) AND college_code = $3',
+      [name, code, collegeCode]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ error: 'Department name or code already exists' });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO departments (name, code, hod_name, status, college_code)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id, name, code, hod_name, status, created_at`,
+      [name, code, hod || null, status || 'active', collegeCode]
+    );
+
+    console.log('✅ Department added:', result.rows[0]);
+    res.status(201).json(result.rows[0]);
+
+  } catch (err) {
+    console.error('❌ Error adding department:', err);
+    res.status(500).json({ error: 'Failed to add department', message: err.message });
+  }
+});
+
+// Update a department
+app.put('/api/college/departments/:id', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    const { id } = req.params;
+    const { name, hod, status } = req.body;
+
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    if (!name) {
+      return res.status(400).json({ error: 'Department name is required' });
+    }
+
+    console.log('📊 Updating department:', { id, name, collegeCode });
+
+    const result = await pool.query(
+      `UPDATE departments 
+       SET name = $1, hod_name = $2, status = $3
+       WHERE id = $4 AND college_code = $5
+       RETURNING *`,
+      [name, hod || null, status || 'active', id, collegeCode]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Department not found' });
+    }
+
+    console.log('✅ Department updated:', result.rows[0]);
+    res.json(result.rows[0]);
+
+  } catch (err) {
+    console.error('❌ Error updating department:', err);
+    res.status(500).json({ error: 'Failed to update department', message: err.message });
+  }
+});
+
+// Delete a department
+app.delete('/api/college/departments/:id', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    const { id } = req.params;
+
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    console.log('📊 Deleting department:', { id, collegeCode });
+
+    // Check if department has students
+    const hasStudents = await pool.query(
+      'SELECT COUNT(*) FROM students WHERE department_id = $1',
+      [id]
+    );
+
+    if (parseInt(hasStudents.rows[0].count) > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete department with assigned students' 
+      });
+    }
+
+    const result = await pool.query(
+      'DELETE FROM departments WHERE id = $1 AND college_code = $2 RETURNING *',
+      [id, collegeCode]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Department not found' });
+    }
+
+    console.log('✅ Department deleted:', result.rows[0]);
+    res.json({ message: 'Department deleted successfully' });
+
+  } catch (err) {
+    console.error('❌ Error deleting department:', err);
+    res.status(500).json({ error: 'Failed to delete department', message: err.message });
+  }
+});
 
 // ========================================
-// Department dashboard Routes
+// STUDENT ROUTES
 // ========================================
-const departmentRoutes = require('./routes/department');
-app.use('/api/departments', departmentRoutes);
+
+// Get all students
+app.get('/api/college/students', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const { department, year, search } = req.query;
+
+    let query = `
+      SELECT 
+        s.id, s.roll_no, s.name, s.email, s.contact,
+        s.course, s.year, s.semester,
+        d.name as department_name,
+        COALESCE(AVG(a.percentage), 0) as attendance_percentage,
+        COALESCE(AVG(g.gpa), 0) as current_gpa
+      FROM students s
+      LEFT JOIN departments d ON s.department_id = d.id
+      LEFT JOIN attendance a ON s.id = a.student_id
+      LEFT JOIN grades g ON s.id = g.student_id
+      WHERE s.college_code = $1
+    `;
+
+    const params = [collegeCode];
+    let paramCount = 1;
+
+    if (department) {
+      paramCount++;
+      query += ` AND d.name = $${paramCount}`;
+      params.push(department);
+    }
+
+    if (year) {
+      paramCount++;
+      query += ` AND s.year = $${paramCount}`;
+      params.push(year);
+    }
+
+    if (search) {
+      paramCount++;
+      query += ` AND (s.name ILIKE $${paramCount} OR s.roll_no ILIKE $${paramCount} OR s.email ILIKE $${paramCount})`;
+      params.push(`%${search}%`);
+    }
+
+    query += ` GROUP BY s.id, d.name ORDER BY s.name ASC`;
+
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching students:', err);
+    res.status(500).json({ error: 'Failed to fetch students' });
+  }
+});
+
+// Get single student
+app.get('/api/college/students/:id', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    const { id } = req.params;
+
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const result = await pool.query(
+      `SELECT 
+        s.*,
+        d.name as department_name,
+        COALESCE(AVG(a.percentage), 0) as attendance_percentage,
+        COALESCE(AVG(g.gpa), 0) as current_gpa
+       FROM students s
+       LEFT JOIN departments d ON s.department_id = d.id
+       LEFT JOIN attendance a ON s.id = a.student_id
+       LEFT JOIN grades g ON s.id = g.student_id
+       WHERE s.id = $1 AND s.college_code = $2
+       GROUP BY s.id, d.name`,
+      [id, collegeCode]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error fetching student:', err);
+    res.status(500).json({ error: 'Failed to fetch student details' });
+  }
+});
+
+// Add student
+app.post('/api/college/students', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const { 
+      roll_no, name, email, contact, course, 
+      year, semester, department_id, parent_name, 
+      parent_email, parent_phone 
+    } = req.body;
+
+    if (!roll_no || !name || !email) {
+      return res.status(400).json({ error: 'Required fields missing' });
+    }
+
+    const existing = await pool.query(
+      'SELECT * FROM students WHERE roll_no = $1 OR email = $2',
+      [roll_no, email]
+    );
+
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ error: 'Student already exists' });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO students (
+        roll_no, name, email, contact, course,
+        year, semester, department_id, college_code,
+        parent_name, parent_email, parent_phone
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING *`,
+      [roll_no, name, email, contact, course, year || 1, 
+       semester || 1, department_id, collegeCode, 
+       parent_name, parent_email, parent_phone]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error adding student:', err);
+    res.status(500).json({ error: 'Failed to add student' });
+  }
+});
+
+// Update student
+app.put('/api/college/students/:id', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    const { id } = req.params;
+    const { name, email, contact, course, year, semester, department_id } = req.body;
+
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const result = await pool.query(
+      `UPDATE students 
+       SET name = $1, email = $2, contact = $3, 
+           course = $4, year = $5, semester = $6, department_id = $7
+       WHERE id = $8 AND college_code = $9
+       RETURNING *`,
+      [name, email, contact, course, year, semester, department_id, id, collegeCode]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating student:', err);
+    res.status(500).json({ error: 'Failed to update student' });
+  }
+});
+
+// Delete student
+app.delete('/api/college/students/:id', authenticateToken, async (req, res) => {
+  try {
+    const collegeCode = req.college.college_code;
+    const { id } = req.params;
+
+    if (!collegeCode) {
+      return res.status(400).json({ error: 'College code not found' });
+    }
+
+    const result = await pool.query(
+      'DELETE FROM students WHERE id = $1 AND college_code = $2 RETURNING *',
+      [id, collegeCode]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json({ message: 'Student deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting student:', err);
+    res.status(500).json({ error: 'Failed to delete student' });
+  }
+});
 
 // ========================================
-// STUDENT REGISTRATION & LOGIN
+// STUDENT REGISTRATION & LOGIN (Public)
 // ========================================
+
 app.post('/register/student', async (req, res) => {
   try {
     const { roll_no, name, email, contact, college_code, course, password, confirm_password } = req.body;
@@ -544,126 +1000,9 @@ app.post('/login/student', async (req, res) => {
 });
 
 // ========================================
-// DEPARTMENT ROUTES
-// ========================================
-
-// Get all departments for a college
-app.get('/api/college/departments', authenticateToken, async (req, res) => {
-    try {
-        const collegeCode = req.college.college_code;
-        
-        const result = await pool.query(
-            `SELECT d.*, 
-                (SELECT COUNT(*) FROM teachers WHERE department_id = d.id) as teacher_count,
-                (SELECT COUNT(*) FROM students WHERE department_id = d.id) as student_count
-             FROM departments d
-             WHERE d.college_code = $1
-             ORDER BY d.department_name`,
-            [collegeCode]
-        );
-
-        res.json(result.rows);
-    } catch (err) {
-        console.error('Error fetching departments:', err);
-        res.status(500).json({ error: 'Failed to fetch departments' });
-    }
-});
-
-// Add a new department
-app.post('/api/college/departments', authenticateToken, async (req, res) => {
-    try {
-        const { name, hod } = req.body;
-        const collegeCode = req.college.college_code;
-
-        if (!name) {
-            return res.status(400).json({ error: 'Department name is required' });
-        }
-
-        // Check if department already exists
-        const existing = await pool.query(
-            'SELECT * FROM departments WHERE department_name = $1 AND college_code = $2',
-            [name, collegeCode]
-        );
-
-        if (existing.rows.length > 0) {
-            return res.status(400).json({ error: 'Department already exists' });
-        }
-
-        const result = await pool.query(
-            `INSERT INTO departments (department_name, hod_name, college_code)
-             VALUES ($1, $2, $3)
-             RETURNING *`,
-            [name, hod || null, collegeCode]
-        );
-
-        res.status(201).json({ 
-            message: 'Department added successfully',
-            department: result.rows[0]
-        });
-    } catch (err) {
-        console.error('Error adding department:', err);
-        res.status(500).json({ error: 'Failed to add department' });
-    }
-});
-
-// Update a department
-app.put('/api/college/departments/:id', authenticateToken, async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, hod } = req.body;
-        const collegeCode = req.college.college_code;
-
-        if (!name) {
-            return res.status(400).json({ error: 'Department name is required' });
-        }
-
-        const result = await pool.query(
-            `UPDATE departments 
-             SET department_name = $1, hod_name = $2
-             WHERE id = $3 AND college_code = $4
-             RETURNING *`,
-            [name, hod || null, id, collegeCode]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Department not found' });
-        }
-
-        res.json({ 
-            message: 'Department updated successfully',
-            department: result.rows[0]
-        });
-    } catch (err) {
-        console.error('Error updating department:', err);
-        res.status(500).json({ error: 'Failed to update department' });
-    }
-});
-
-// Delete a department
-app.delete('/api/college/departments/:id', authenticateToken, async (req, res) => {
-    try {
-        const { id } = req.params;
-        const collegeCode = req.college.college_code;
-
-        const result = await pool.query(
-            'DELETE FROM departments WHERE id = $1 AND college_code = $2 RETURNING *',
-            [id, collegeCode]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Department not found' });
-        }
-
-        res.json({ message: 'Department deleted successfully' });
-    } catch (err) {
-        console.error('Error deleting department:', err);
-        res.status(500).json({ error: 'Failed to delete department' });
-    }
-});
-
-// ========================================
 // PARENT REGISTRATION & LOGIN
 // ========================================
+
 app.post('/register/parent', async (req, res) => {
   try {
     const { name, email, phone, student_email, relationship, password, confirm_password } = req.body;
@@ -740,6 +1079,7 @@ app.post('/login/parent', async (req, res) => {
 // ========================================
 // TEACHER REGISTRATION & LOGIN
 // ========================================
+
 app.post('/register/teacher', async (req, res) => {
   try {
     const { name, email, subject, department, password, confirm_password } = req.body;
@@ -802,8 +1142,21 @@ app.post('/api/teacher/login', async (req, res) => {
 });
 
 // ========================================
+// DEBUG ENDPOINT
+// ========================================
+
+app.get('/api/debug/token', authenticateToken, (req, res) => {
+  res.json({
+    message: 'Token is valid',
+    college: req.college,
+    user: req.user
+  });
+});
+
+// ========================================
 // ERROR HANDLERS
 // ========================================
+
 app.use((req, res) => {
   res.status(404).json({ 
     error: 'Endpoint not found',
@@ -814,6 +1167,10 @@ app.use((req, res) => {
 // ========================================
 // START SERVER
 // ========================================
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`🔑 JWT Secret: ${JWT_SECRET ? 'Set' : 'Not set'}`);
+});
 
 module.exports = pool;
