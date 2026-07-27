@@ -620,7 +620,7 @@ app.post('/api/college/departments', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Department name and code are required' });
     }
 
-    console.log('📊 Adding department:', { name, code, collegeCode });
+    console.log('📊 Adding department:', { name, code, hod, collegeCode });
 
     // Check if department already exists
     const existing = await pool.query(
@@ -663,11 +663,11 @@ app.put('/api/college/departments/:id', authenticateToken, async (req, res) => {
       return res.status(400).json({ error: 'Department name is required' });
     }
 
-    console.log('📊 Updating department:', { id, name, collegeCode });
+    console.log('📊 Updating department:', { id, name, hod, collegeCode });
 
     const result = await pool.query(
       `UPDATE departments 
-       SET name = $1, hod_name = $2, status = $3
+       SET name = $1, hod_name = $2, status = $3, updated_at = CURRENT_TIMESTAMP
        WHERE id = $4 AND college_code = $5
        RETURNING *`,
       [name, hod || null, status || 'active', id, collegeCode]
@@ -706,7 +706,19 @@ app.delete('/api/college/departments/:id', authenticateToken, async (req, res) =
 
     if (parseInt(hasStudents.rows[0].count) > 0) {
       return res.status(400).json({ 
-        error: 'Cannot delete department with assigned students' 
+        error: 'Cannot delete department with assigned students. Please reassign students first.' 
+      });
+    }
+
+    // Check if department has teachers
+    const hasTeachers = await pool.query(
+      'SELECT COUNT(*) FROM teachers WHERE department_id = $1',
+      [id]
+    );
+
+    if (parseInt(hasTeachers.rows[0].count) > 0) {
+      return res.status(400).json({ 
+        error: 'Cannot delete department with assigned teachers. Please reassign teachers first.' 
       });
     }
 
