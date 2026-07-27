@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
+    /* ===== RESET & BASE ===== */
     * {
       margin: 0;
       padding: 0;
@@ -203,6 +204,7 @@
       margin-right: 10px;
     }
 
+    /* ===== BUTTONS ===== */
     .btn-group {
       display: flex;
       gap: 12px;
@@ -244,10 +246,21 @@
       transform: translateY(-2px);
     }
 
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
     .btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
+      transform: none !important;
     }
 
     /* ===== DEPARTMENTS LIST ===== */
@@ -313,6 +326,10 @@
       gap: 15px;
     }
 
+    .year-panel.visible {
+      display: flex;
+    }
+
     .year-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.05);
@@ -351,9 +368,9 @@
       margin-right: 6px;
     }
 
-    .stats-list .stat-total { color: #2e86de; }
-    .stats-list .stat-saved { color: #10ac84; }
-    .stats-list .stat-risk { color: #ee7939; }
+    .stat-total { color: #2e86de; }
+    .stat-saved { color: #10ac84; }
+    .stat-risk { color: #ee7939; }
 
     /* ===== EMPTY STATE ===== */
     .empty-state {
@@ -373,7 +390,6 @@
       font-size: 1.1rem;
     }
 
-    /* ===== RETRY BUTTON ===== */
     .retry-btn {
       margin-top: 20px;
     }
@@ -458,6 +474,10 @@
       font-size: 0.85rem;
     }
 
+    .modal label .required {
+      color: #ff6b6b;
+    }
+
     .modal input,
     .modal select {
       width: 100%;
@@ -512,6 +532,10 @@
       gap: 12px;
       z-index: 3000;
       animation: slideUp 0.4s ease;
+    }
+
+    .toast.visible {
+      display: flex;
     }
 
     @keyframes slideUp {
@@ -583,17 +607,6 @@
         font-size: 0.8rem;
       }
     }
-
-    *{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        body {
-            background: linear-gradient(135deg, #b3b4b5 100%);
-            min-height: 100vh;
-        }
   </style>
 </head>
 <body>
@@ -647,17 +660,17 @@
     <div class="modal">
       <h3><i class="fas fa-plus-circle" aria-hidden="true"></i> Add New Department</h3>
       <form id="addDeptForm">
-        <label for="newDeptName">Department Name</label>
+        <label for="newDeptName">Department Name <span class="required">*</span></label>
         <input type="text" id="newDeptName" required placeholder="e.g., Computer Science" />
 
-        <label for="newDeptCode">Department Code</label>
-        <input type="number" id="newDeptCode" required placeholder="e.g., 101" />
+        <label for="newDeptCode">Department Code <span class="required">*</span></label>
+        <input type="text" id="newDeptCode" required placeholder="e.g., CS101" />
 
         <div class="btn-group">
           <button type="submit" class="btn btn-primary" id="submitAddBtn">
             <i class="fas fa-save" aria-hidden="true"></i> Add Department
           </button>
-          <button type="button" class="btn btn-danger" id="cancelAddDeptBtn">
+          <button type="button" class="btn btn-secondary" id="cancelAddDeptBtn">
             <i class="fas fa-times" aria-hidden="true"></i> Cancel
           </button>
         </div>
@@ -670,7 +683,7 @@
     <div class="modal">
       <h3><i class="fas fa-trash-alt" aria-hidden="true"></i> Remove Department</h3>
       <form id="removeDeptForm">
-        <label for="removeDeptSelect">Select Department</label>
+        <label for="removeDeptSelect">Select Department <span class="required">*</span></label>
         <select id="removeDeptSelect" required>
           <option value="">-- Select Department --</option>
         </select>
@@ -679,7 +692,7 @@
           <button type="submit" class="btn btn-danger" id="submitRemoveBtn">
             <i class="fas fa-trash" aria-hidden="true"></i> Remove Department
           </button>
-          <button type="button" class="btn btn-primary" id="cancelRemoveDeptBtn">
+          <button type="button" class="btn btn-secondary" id="cancelRemoveDeptBtn">
             <i class="fas fa-times" aria-hidden="true"></i> Cancel
           </button>
         </div>
@@ -694,7 +707,9 @@
   </div>
 
   <script>
-    // ===== PARTICLES =====
+    // ============================================
+    // PARTICLES BACKGROUND
+    // ============================================
     (function createParticles() {
       var container = document.getElementById('particles');
       for (var i = 0; i < 50; i++) {
@@ -711,97 +726,153 @@
       }
     })();
 
-    // ===== TOAST =====
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
     function showToast(message, type) {
       var toast = document.getElementById('toast');
       var msg = document.getElementById('toastMessage');
-      toast.className = 'toast ' + (type || 'success');
+      toast.className = 'toast ' + (type || 'success') + ' visible';
       msg.textContent = message;
-      toast.style.display = 'flex';
       clearTimeout(toast._timeout);
       toast._timeout = setTimeout(function() {
-        toast.style.display = 'none';
+        toast.classList.remove('visible');
       }, 3000);
     }
 
-    // ===== CONFIGURATION =====
+    // ============================================
+    // CONFIGURATION
+    // ============================================
     var backendUrl = 'https://edupredict-l9eg.onrender.com';
     var departmentsData = [];
     var collegeCode = null;
     var authToken = null;
 
-    // ===== AUTHENTICATION =====
-    function checkAuthentication() {
-      authToken = localStorage.getItem('collegeToken');
-      var collegeDataStr = localStorage.getItem('collegeData');
+    // ============================================
+    // AUTHENTICATION HELPERS
+    // ============================================
+    function getAuthToken() {
+      return localStorage.getItem('collegeToken') || localStorage.getItem('token');
+    }
 
-      if (!authToken || !collegeDataStr) {
-        showToast('Please login first.', 'error');
-        setTimeout(function() {
-          window.location.href = '../login/college.html';
-        }, 1500);
-        return false;
-      }
-
+    function getCollegeData() {
       try {
-        var collegeData = JSON.parse(collegeDataStr);
-        collegeCode = collegeData.code;
-
-        if (!collegeCode) {
-          showToast('Session error. Please login again.', 'error');
-          localStorage.clear();
-          setTimeout(function() {
-            window.location.href = '../login/college.html';
-          }, 1500);
-          return false;
-        }
-
-        document.getElementById('collegeName').textContent = collegeData.name || 'EduPredict';
-        return true;
-      } catch (err) {
-        showToast('Session error. Please login again.', 'error');
-        localStorage.clear();
-        setTimeout(function() {
-          window.location.href = '../login/college.html';
-        }, 1500);
-        return false;
+        var data = localStorage.getItem('collegeData');
+        return data ? JSON.parse(data) : null;
+      } catch (e) {
+        return null;
       }
     }
 
-    // ===== LOAD DEPARTMENTS =====
+    function checkAuthentication() {
+      authToken = getAuthToken();
+      var collegeData = getCollegeData();
+
+      if (!authToken || !collegeData) {
+        showToast('Please login first.', 'error');
+        setTimeout(function() {
+          window.location.href = 'login.html';
+        }, 1500);
+        return false;
+      }
+
+      collegeCode = collegeData.code || collegeData.college_code;
+      if (!collegeCode) {
+        showToast('Session error. Please login again.', 'error');
+        localStorage.clear();
+        setTimeout(function() {
+          window.location.href = 'login.html';
+        }, 1500);
+        return false;
+      }
+
+      document.getElementById('collegeName').textContent = collegeData.name || 'EduPredict';
+      return true;
+    }
+
+    // ============================================
+    // AUTHENTICATED FETCH
+    // ============================================
+    async function authenticatedFetch(url, options) {
+      options = options || {};
+      var token = getAuthToken();
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      };
+
+      if (options.headers) {
+        Object.assign(headers, options.headers);
+      }
+
+      var response = await fetch(url, {
+        method: options.method || 'GET',
+        headers: headers,
+        body: options.body || null
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem('collegeToken');
+        localStorage.removeItem('token');
+        localStorage.removeItem('collegeData');
+        showToast('Session expired. Please login again.', 'error');
+        setTimeout(function() {
+          window.location.href = 'login.html';
+        }, 1500);
+        throw new Error('Session expired');
+      }
+
+      return response;
+    }
+
+    // ============================================
+    // LOAD DEPARTMENTS
+    // ============================================
     async function loadDepartments() {
       if (!checkAuthentication()) return;
 
+      var listEl = document.getElementById('departmentsList');
+      listEl.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading departments...</p></div>';
+
       try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/departments', {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer ' + authToken,
-            'Content-Type': 'application/json'
-          }
-        });
+        var response = await authenticatedFetch(backendUrl + '/api/college/departments');
 
         if (!response.ok) {
           throw new Error('Failed to load departments');
         }
 
         var data = await response.json();
-        departmentsData = data.departments || [];
+        departmentsData = data.departments || data || [];
         renderDepartments();
       } catch (error) {
         console.error('Error loading departments:', error);
-        document.getElementById('departmentsList').innerHTML =
-          '<div class="empty-state"><i class="fas fa-exclamation-circle" aria-hidden="true"></i><p>Failed to load departments. Please try again.</p><button class="btn btn-primary retry-btn" onclick="loadDepartments()"><i class="fas fa-sync" aria-hidden="true"></i> Retry</button></div>';
+        listEl.innerHTML = 
+          '<div class="empty-state">' +
+          '<i class="fas fa-exclamation-circle" aria-hidden="true"></i>' +
+          '<p>Failed to load departments. Please try again.</p>' +
+          '<button class="btn btn-primary retry-btn" onclick="loadDepartments()">' +
+          '<i class="fas fa-sync" aria-hidden="true"></i> Retry</button>' +
+          '</div>';
       }
     }
 
-    // ===== RENDER DEPARTMENTS =====
+    // ============================================
+    // RENDER DEPARTMENTS
+    // ============================================
     function renderDepartments() {
       var listEl = document.getElementById('departmentsList');
       listEl.innerHTML = '';
 
-      if (departmentsData.length === 0) {
-        listEl.innerHTML = '<div class="empty-state"><i class="fas fa-building" aria-hidden="true"></i><p>No departments found. Add your first department!</p></div>';
+      if (!departmentsData || departmentsData.length === 0) {
+        listEl.innerHTML = 
+          '<div class="empty-state">' +
+          '<i class="fas fa-building" aria-hidden="true"></i>' +
+          '<p>No departments found. Add your first department!</p>' +
+          '</div>';
         updateRemoveDeptOptions();
         return;
       }
@@ -811,11 +882,12 @@
         fragment.appendChild(createDepartmentElement(dept));
       });
       listEl.appendChild(fragment);
-
       updateRemoveDeptOptions();
     }
 
-    // ===== CREATE DEPARTMENT ELEMENT =====
+    // ============================================
+    // CREATE DEPARTMENT ELEMENT
+    // ============================================
     function createDepartmentElement(dept) {
       var deptDiv = document.createElement('div');
       deptDiv.className = 'department';
@@ -824,97 +896,90 @@
 
       var header = document.createElement('div');
       header.className = 'department-header';
+      var deptCode = dept.code || dept.department_code || dept.id || 'N/A';
+      var deptName = dept.name || dept.department_name || 'Unnamed';
+      
       header.innerHTML = 
-        '<span>' + dept.name + ' <span class="dept-code"><i class="fas fa-hashtag" aria-hidden="true"></i>' + dept.code + '</span></span>' +
+        '<span>' + deptName + ' <span class="dept-code"><i class="fas fa-hashtag" aria-hidden="true"></i>' + deptCode + '</span></span>' +
         '<span class="expand-icon">&#9654;</span>';
-      header.onclick = function() { toggleYears('years-' + dept.code, header); };
+      
+      var panelId = 'years-' + (dept.id || deptCode);
+      var isExpanded = false;
+      
+      header.onclick = function() {
+        var panel = document.getElementById(panelId);
+        var icon = header.querySelector('.expand-icon');
+        if (isExpanded) {
+          panel.classList.remove('visible');
+          icon.classList.remove('expanded');
+          isExpanded = false;
+        } else {
+          panel.classList.add('visible');
+          icon.classList.add('expanded');
+          isExpanded = true;
+        }
+      };
+      
       deptDiv.appendChild(header);
 
       var yearsPanel = document.createElement('div');
       yearsPanel.className = 'year-panel';
-      yearsPanel.id = 'years-' + dept.code;
-      yearsPanel.style.display = 'none';
+      yearsPanel.id = panelId;
 
-      fetchDepartmentYearSummary(dept.code).then(function(yearsSummary) {
-        var years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
-        years.forEach(function(year) {
-          var stats = yearsSummary.find(function(y) { return y.year === year; }) || { total: 0, saved: 0, risk: 0 };
-          var yearCard = document.createElement('div');
-          yearCard.className = 'year-card';
-          yearCard.setAttribute('role', 'listitem');
-          yearCard.onclick = function() {
-            window.location.href = 'studentList.html?dept=' + dept.code + '&year=' + encodeURIComponent(year);
-          };
-          yearCard.innerHTML = 
-            '<h4>' + year + '</h4>' +
-            '<ul class="stats-list">' +
-            '<li><i class="fas fa-users stat-total" aria-hidden="true"></i> Total: ' + stats.total + '</li>' +
-            '<li><i class="fas fa-check-circle stat-saved" aria-hidden="true"></i> Saved: ' + stats.saved + '</li>' +
-            '<li><i class="fas fa-exclamation-triangle stat-risk" aria-hidden="true"></i> At Risk: ' + stats.risk + '</li>' +
-            '</ul>';
-          yearsPanel.appendChild(yearCard);
-        });
+      var years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+      years.forEach(function(year) {
+        var yearCard = document.createElement('div');
+        yearCard.className = 'year-card';
+        yearCard.innerHTML = 
+          '<h4>' + year + '</h4>' +
+          '<ul class="stats-list">' +
+          '<li><i class="fas fa-users stat-total" aria-hidden="true"></i> Total: 0</li>' +
+          '<li><i class="fas fa-check-circle stat-saved" aria-hidden="true"></i> Saved: 0</li>' +
+          '<li><i class="fas fa-exclamation-triangle stat-risk" aria-hidden="true"></i> At Risk: 0</li>' +
+          '</ul>';
+        yearsPanel.appendChild(yearCard);
       });
 
       deptDiv.appendChild(yearsPanel);
       return deptDiv;
     }
 
-    // ===== FETCH DEPARTMENT YEAR SUMMARY =====
-    async function fetchDepartmentYearSummary(deptId) {
-      try {
-        var response = await fetch(backendUrl + '/api/departments/' + deptId + '/years/summary', {
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        });
-        if (!response.ok) return [];
-        var data = await response.json();
-        return data.years || [];
-      } catch (error) {
-        console.error('Error fetching year summary:', error);
-        return [];
-      }
+    // ============================================
+    // UPDATE REMOVE DEPARTMENT OPTIONS
+    // ============================================
+    function updateRemoveDeptOptions() {
+      var select = document.getElementById('removeDeptSelect');
+      select.innerHTML = '<option value="">-- Select Department --</option>';
+      departmentsData.forEach(function(dept) {
+        var option = document.createElement('option');
+        var deptId = dept.id || dept.code || dept.department_code;
+        option.value = deptId;
+        option.textContent = (dept.name || dept.department_name || 'Unnamed') + ' (' + deptId + ')';
+        select.appendChild(option);
+      });
     }
 
-    // ===== TOGGLE YEARS =====
-    function toggleYears(panelId, headerEl) {
-      var panel = document.getElementById(panelId);
-      var icon = headerEl.querySelector('.expand-icon');
-      var isVisible = panel.style.display === 'flex';
-
-      if (isVisible) {
-        panel.style.display = 'none';
-        icon.classList.remove('expanded');
-      } else {
-        panel.style.display = 'flex';
-        icon.classList.add('expanded');
-      }
-    }
-
-    // ===== ADD DEPARTMENT =====
+    // ============================================
+    // ADD DEPARTMENT
+    // ============================================
     async function addDepartment(departmentName, departmentCode) {
       var submitBtn = document.getElementById('submitAddBtn');
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Adding...';
 
       try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/departments', {
+        var response = await authenticatedFetch(backendUrl + '/api/college/departments', {
           method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + authToken,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ name: departmentName, code: departmentCode || null })
+          body: JSON.stringify({ 
+            name: departmentName, 
+            code: departmentCode,
+            department_code: departmentCode
+          })
         });
 
-        var contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Server returned an invalid response.');
-        }
-
-        var result = await response.json();
-
         if (!response.ok) {
-          throw new Error(result.error || 'Failed to add department');
+          var errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to add department');
         }
 
         showToast('Department added successfully!', 'success');
@@ -929,24 +994,22 @@
       }
     }
 
-    // ===== REMOVE DEPARTMENT =====
-    async function removeDepartment(departmentCode) {
+    // ============================================
+    // REMOVE DEPARTMENT
+    // ============================================
+    async function removeDepartment(departmentId) {
       var submitBtn = document.getElementById('submitRemoveBtn');
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Removing...';
 
       try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/departments/' + departmentCode, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': 'Bearer ' + authToken,
-            'Content-Type': 'application/json'
-          }
+        var response = await authenticatedFetch(backendUrl + '/api/college/departments/' + departmentId, {
+          method: 'DELETE'
         });
 
         if (!response.ok) {
           var error = await response.json();
-          throw new Error(error.message || 'Failed to remove department');
+          throw new Error(error.error || 'Failed to remove department');
         }
 
         showToast('Department removed successfully!', 'success');
@@ -961,19 +1024,9 @@
       }
     }
 
-    // ===== UPDATE REMOVE DEPARTMENT OPTIONS =====
-    function updateRemoveDeptOptions() {
-      var select = document.getElementById('removeDeptSelect');
-      select.innerHTML = '<option value="">-- Select Department --</option>';
-      departmentsData.forEach(function(dept) {
-        var option = document.createElement('option');
-        option.value = dept.code;
-        option.textContent = dept.name + ' (' + dept.code + ')';
-        select.appendChild(option);
-      });
-    }
-
-    // ===== MODAL CONTROLS =====
+    // ============================================
+    // MODAL CONTROLS
+    // ============================================
     var addDeptBtn = document.getElementById('addDepartmentBtn');
     var removeDeptBtn = document.getElementById('removeDepartmentBtn');
     var addDeptModal = document.getElementById('addDeptModal');
@@ -983,36 +1036,37 @@
     var addDeptForm = document.getElementById('addDeptForm');
     var removeDeptForm = document.getElementById('removeDeptForm');
 
-    addDeptBtn.onclick = function() {
+    function openAddDeptModal() {
       addDeptModal.classList.add('active');
       document.getElementById('newDeptName').value = '';
       document.getElementById('newDeptCode').value = '';
       document.getElementById('newDeptName').focus();
-    };
+    }
 
-    removeDeptBtn.onclick = function() {
+    function closeAddDeptModal() {
+      addDeptModal.classList.remove('active');
+    }
+
+    function openRemoveDeptModal() {
       if (departmentsData.length === 0) {
         showToast('No departments available to remove.', 'error');
         return;
       }
       removeDeptModal.classList.add('active');
-    };
-
-    function closeAddDeptModal() {
-      addDeptModal.classList.remove('active');
     }
 
     function closeRemoveDeptModal() {
       removeDeptModal.classList.remove('active');
     }
 
+    addDeptBtn.onclick = openAddDeptModal;
+    removeDeptBtn.onclick = openRemoveDeptModal;
     cancelAddBtn.onclick = closeAddDeptModal;
     cancelRemoveBtn.onclick = closeRemoveDeptModal;
 
     addDeptModal.onclick = function(e) {
       if (e.target === addDeptModal) closeAddDeptModal();
     };
-
     removeDeptModal.onclick = function(e) {
       if (e.target === removeDeptModal) closeRemoveDeptModal();
     };
@@ -1024,7 +1078,9 @@
       }
     });
 
-    // ===== FORM SUBMISSIONS =====
+    // ============================================
+    // FORM SUBMISSIONS
+    // ============================================
     addDeptForm.onsubmit = function(e) {
       e.preventDefault();
       var deptName = document.getElementById('newDeptName').value.trim();
@@ -1035,8 +1091,18 @@
         return;
       }
 
-      if (departmentsData.some(function(d) { return d.name.toLowerCase() === deptName.toLowerCase(); })) {
-        showToast('Department already exists.', 'error');
+      if (!deptCode) {
+        showToast('Please enter a department code.', 'error');
+        return;
+      }
+
+      var exists = departmentsData.some(function(d) {
+        return (d.name || d.department_name || '').toLowerCase() === deptName.toLowerCase() ||
+               (d.code || d.department_code || '') === deptCode;
+      });
+
+      if (exists) {
+        showToast('Department name or code already exists.', 'error');
         return;
       }
 
@@ -1057,188 +1123,14 @@
       }
     };
 
-    // Get token from localStorage
-        function getAuthToken() {
-            return localStorage.getItem('collegeToken') || localStorage.getItem('token');
-        }
-
-        // Helper function for authenticated fetch
-        async function authenticatedFetch(url, options = {}) {
-            const token = getAuthToken();
-            if (!token) {
-                throw new Error('No authentication token found. Please login again.');
-            }
-
-            const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                ...options.headers
-            };
-
-            const response = await fetch(url, {
-                ...options,
-                headers
-            });
-
-            if (response.status === 401 || response.status === 403) {
-                // Token expired or invalid
-                localStorage.removeItem('collegeToken');
-                localStorage.removeItem('token');
-                alert('Session expired. Please login again.');
-                window.location.href = 'login.html';
-                throw new Error('Session expired');
-            }
-
-            return response;
-        }
-
-        // Load departments
-        async function loadDepartments() {
-            try {
-                const response = await authenticatedFetch('/api/college/departments');
-                
-                if (!response.ok) {
-                    throw new Error('Failed to load departments');
-                }
-
-                const departments = await response.json();
-                const tbody = document.getElementById('departmentsTableBody');
-                tbody.innerHTML = '';
-
-                departments.forEach(dept => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${dept.department_id || dept.id}</td>
-                        <td>${dept.department_name || dept.name}</td>
-                        <td>${dept.hod_name || dept.hod || 'N/A'}</td>
-                        <td>${dept.student_count || 0}</td>
-                        <td>${dept.teacher_count || 0}</td>
-                        <td>
-                            <button onclick="editDepartment(${dept.department_id || dept.id})" class="btn-edit">Edit</button>
-                            <button onclick="deleteDepartment(${dept.department_id || dept.id})" class="btn-delete">Delete</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-
-            } catch (error) {
-                console.error('Error loading departments:', error);
-                document.getElementById('departmentsTableBody').innerHTML = 
-                    `<tr><td colspan="6" style="text-align:center;color:red;">Failed to load departments: ${error.message}</td></tr>`;
-            }
-        }
-
-        // Add department
-        async function addDepartment() {
-            try {
-                const deptName = document.getElementById('departmentName').value.trim();
-                const hodName = document.getElementById('hodName').value.trim();
-
-                if (!deptName) {
-                    alert('Please enter department name');
-                    return;
-                }
-
-                const response = await authenticatedFetch('/api/college/departments', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        name: deptName,
-                        hod: hodName || null
-                    })
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to add department');
-                }
-
-                const result = await response.json();
-                alert('Department added successfully!');
-                document.getElementById('deptForm').reset();
-                loadDepartments();
-
-            } catch (error) {
-                console.error('Error adding department:', error);
-                alert('Error adding department: ' + error.message);
-            }
-        }
-
-        // Delete department
-        async function deleteDepartment(id) {
-            if (!confirm('Are you sure you want to delete this department?')) return;
-
-            try {
-                const response = await authenticatedFetch(`/api/college/departments/${id}`, {
-                    method: 'DELETE'
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to delete department');
-                }
-
-                alert('Department deleted successfully!');
-                loadDepartments();
-
-            } catch (error) {
-                console.error('Error deleting department:', error);
-                alert('Error deleting department: ' + error.message);
-            }
-        }
-
-        // Edit department
-        async function editDepartment(id) {
-            const newName = prompt('Enter new department name:');
-            if (!newName) return;
-
-            try {
-                const response = await authenticatedFetch(`/api/college/departments/${id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ name: newName })
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Failed to update department');
-                }
-
-                alert('Department updated successfully!');
-                loadDepartments();
-
-            } catch (error) {
-                console.error('Error updating department:', error);
-                alert('Error updating department: ' + error.message);
-            }
-        }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if user is logged in
-            const token = getAuthToken();
-            if (!token) {
-                alert('Please login first');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            loadDepartments();
-
-            // Setup form submission
-            document.getElementById('deptForm').onsubmit = function(e) {
-                e.preventDefault();
-                addDepartment();
-            };
-        });
-
-        // Logout function
-        function logout() {
-            localStorage.removeItem('collegeToken');
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-        }
-
-    // ===== INITIALIZE =====
-    window.addEventListener('DOMContentLoaded', loadDepartments);
+    // ============================================
+    // INITIALIZE PAGE
+    // ============================================
+    window.addEventListener('DOMContentLoaded', function() {
+      if (checkAuthentication()) {
+        loadDepartments();
+      }
+    });
   </script>
 </body>
 </html>
