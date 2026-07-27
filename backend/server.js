@@ -544,6 +544,124 @@ app.post('/login/student', async (req, res) => {
 });
 
 // ========================================
+// DEPARTMENT ROUTES
+// ========================================
+
+// Get all departments for a college
+app.get('/api/college/departments', authenticateToken, async (req, res) => {
+    try {
+        const collegeCode = req.college.college_code;
+        
+        const result = await pool.query(
+            `SELECT d.*, 
+                (SELECT COUNT(*) FROM teachers WHERE department_id = d.id) as teacher_count,
+                (SELECT COUNT(*) FROM students WHERE department_id = d.id) as student_count
+             FROM departments d
+             WHERE d.college_code = $1
+             ORDER BY d.department_name`,
+            [collegeCode]
+        );
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching departments:', err);
+        res.status(500).json({ error: 'Failed to fetch departments' });
+    }
+});
+
+// Add a new department
+app.post('/api/college/departments', authenticateToken, async (req, res) => {
+    try {
+        const { name, hod } = req.body;
+        const collegeCode = req.college.college_code;
+
+        if (!name) {
+            return res.status(400).json({ error: 'Department name is required' });
+        }
+
+        // Check if department already exists
+        const existing = await pool.query(
+            'SELECT * FROM departments WHERE department_name = $1 AND college_code = $2',
+            [name, collegeCode]
+        );
+
+        if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'Department already exists' });
+        }
+
+        const result = await pool.query(
+            `INSERT INTO departments (department_name, hod_name, college_code)
+             VALUES ($1, $2, $3)
+             RETURNING *`,
+            [name, hod || null, collegeCode]
+        );
+
+        res.status(201).json({ 
+            message: 'Department added successfully',
+            department: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Error adding department:', err);
+        res.status(500).json({ error: 'Failed to add department' });
+    }
+});
+
+// Update a department
+app.put('/api/college/departments/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, hod } = req.body;
+        const collegeCode = req.college.college_code;
+
+        if (!name) {
+            return res.status(400).json({ error: 'Department name is required' });
+        }
+
+        const result = await pool.query(
+            `UPDATE departments 
+             SET department_name = $1, hod_name = $2
+             WHERE id = $3 AND college_code = $4
+             RETURNING *`,
+            [name, hod || null, id, collegeCode]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Department not found' });
+        }
+
+        res.json({ 
+            message: 'Department updated successfully',
+            department: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Error updating department:', err);
+        res.status(500).json({ error: 'Failed to update department' });
+    }
+});
+
+// Delete a department
+app.delete('/api/college/departments/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const collegeCode = req.college.college_code;
+
+        const result = await pool.query(
+            'DELETE FROM departments WHERE id = $1 AND college_code = $2 RETURNING *',
+            [id, collegeCode]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Department not found' });
+        }
+
+        res.json({ message: 'Department deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting department:', err);
+        res.status(500).json({ error: 'Failed to delete department' });
+    }
+});
+
+// ========================================
 // PARENT REGISTRATION & LOGIN
 // ========================================
 app.post('/register/parent', async (req, res) => {
