@@ -557,7 +557,7 @@
       document.getElementById('collegeName').textContent = collegeData.name || 'EduPredict College';
 
       // Try to fetch fresh data from API
-      fetch(backendUrl + '/api/college/dashboard', {
+      fetch(backendUrl + '/api/college-dashboard/dashboard', {
         headers: { 'Authorization': 'Bearer ' + token }
       })
       .then(function(response) {
