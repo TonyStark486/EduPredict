@@ -920,65 +920,69 @@
 
     // ===== LOAD DEPARTMENTS =====
     async function loadDepartments() {
-      try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/departments', {
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        });
+  try {
+    // ✅ UPDATED: Use /api/departments/${collegeCode}
+    var response = await fetch(backendUrl + '/api/departments/' + collegeCode, {
+      headers: { 'Authorization': 'Bearer ' + authToken }
+    });
 
-        if (response.ok) {
-          var data = await response.json();
-          departments = data.departments || [];
-          populateDepartmentSelect();
-        }
-      } catch (error) {
-        console.error('Error loading departments:', error);
-      }
+    if (response.ok) {
+      var data = await response.json();
+      // The response is now an array directly
+      departments = Array.isArray(data) ? data : (data.departments || []);
+      populateDepartmentSelect();
     }
+  } catch (error) {
+    console.error('Error loading departments:', error);
+  }
+}
 
-    function populateDepartmentSelect() {
-      var select = document.getElementById('teacherDepartment');
-      select.innerHTML = '<option value="">Select Department</option>';
-      departments.forEach(function(dept) {
-        var option = document.createElement('option');
-        option.value = dept.code;
-        option.textContent = dept.name;
-        select.appendChild(option);
-      });
-    }
+function populateDepartmentSelect() {
+  var select = document.getElementById('teacherDepartment');
+  select.innerHTML = '<option value="">Select Department</option>';
+  departments.forEach(function(dept) {
+    var option = document.createElement('option');
+    option.value = dept.id || dept.code;
+    option.textContent = dept.name + ' (' + (dept.code || dept.id) + ')';
+    select.appendChild(option);
+  });
+}
 
     // ===== LOAD TEACHERS =====
     async function loadTeachers() {
-      if (!checkAuth()) return;
+  if (!checkAuth()) return;
 
-      try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/teachers', {
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        });
+  try {
+    // ✅ UPDATED: Use /api/teachers/college/${collegeCode}
+    var response = await fetch(backendUrl + '/api/teachers/college/' + collegeCode, {
+      headers: { 'Authorization': 'Bearer ' + authToken }
+    });
 
-        if (response.status === 401 || response.status === 403) {
-          showToast('Session expired. Please login again.', 'error');
-          setTimeout(function() {
-            localStorage.clear();
-            window.location.href = '../login/college.html';
-          }, 1500);
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error('Failed to load teachers');
-        }
-
-        var data = await response.json();
-        teachers = data.teachers || [];
-        renderTeachers();
-
-      } catch (error) {
-        console.error('Error loading teachers:', error);
-        showEmptyState();
-      } finally {
-        document.getElementById('loadingState').classList.add('hidden');
-      }
+    if (response.status === 401 || response.status === 403) {
+      showToast('Session expired. Please login again.', 'error');
+      setTimeout(function() {
+        localStorage.clear();
+        window.location.href = '../login/college.html';
+      }, 1500);
+      return;
     }
+
+    if (!response.ok) {
+      throw new Error('Failed to load teachers');
+    }
+
+    var data = await response.json();
+    // The response is now an array directly
+    teachers = Array.isArray(data) ? data : (data.teachers || []);
+    renderTeachers();
+
+  } catch (error) {
+    console.error('Error loading teachers:', error);
+    showEmptyState();
+  } finally {
+    document.getElementById('loadingState').classList.add('hidden');
+  }
+}
 
     // ===== RENDER TEACHERS =====
     function renderTeachers() {
@@ -1021,93 +1025,96 @@
 
     // ===== ADD TEACHER =====
     document.getElementById('addTeacherForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+  e.preventDefault();
 
-      var name = document.getElementById('teacherName').value.trim();
-      var email = document.getElementById('teacherEmail').value.trim();
-      var teacherId = document.getElementById('teacherId').value.trim();
-      var department = document.getElementById('teacherDepartment').value;
-      var designation = document.getElementById('teacherDesignation').value;
-      var password = document.getElementById('teacherPassword').value;
-      var confirm = document.getElementById('teacherConfirmPassword').value;
+  var name = document.getElementById('teacherName').value.trim();
+  var email = document.getElementById('teacherEmail').value.trim();
+  var teacherId = document.getElementById('teacherId').value.trim();
+  var department = document.getElementById('teacherDepartment').value;
+  var designation = document.getElementById('teacherDesignation').value;
+  var password = document.getElementById('teacherPassword').value;
+  var confirm = document.getElementById('teacherConfirmPassword').value;
 
-      if (!name || !email || !teacherId || !department || !designation || !password) {
-        showToast('Please fill all required fields', 'error');
-        return;
-      }
+  if (!name || !email || !teacherId || !department || !designation || !password) {
+    showToast('Please fill all required fields', 'error');
+    return;
+  }
 
-      if (password !== confirm) {
-        showToast('Passwords do not match', 'error');
-        return;
-      }
+  if (password !== confirm) {
+    showToast('Passwords do not match', 'error');
+    return;
+  }
 
-      if (password.length < 6) {
-        showToast('Password must be at least 6 characters', 'error');
-        return;
-      }
+  if (password.length < 6) {
+    showToast('Password must be at least 6 characters', 'error');
+    return;
+  }
 
-      var submitBtn = document.getElementById('submitTeacherBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Adding...';
+  var submitBtn = document.getElementById('submitTeacherBtn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Adding...';
 
-      try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/teachers', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + authToken,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            name: name,
-            email: email,
-            teacher_id: teacherId,
-            department_code: department,
-            designation: designation,
-            password: password
-          })
-        });
-
-        var result = await response.json();
-
-        if (response.ok) {
-          showToast('Teacher added successfully!', 'success');
-          this.reset();
-          closeAddTeacherModal();
-          loadTeachers();
-        } else {
-          showToast(result.error || 'Failed to add teacher', 'error');
-        }
-      } catch (error) {
-        console.error('Error adding teacher:', error);
-        showToast('Failed to add teacher. Please try again.', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Add Teacher';
-      }
+  try {
+    // ✅ UPDATED: Use /api/teachers/college/${collegeCode}
+    var response = await fetch(backendUrl + '/api/teachers/college/' + collegeCode, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + authToken,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        teacher_id: teacherId,
+        department_id: department,  // Changed from department_code to department_id
+        designation: designation,
+        password: password,
+        confirm_password: confirm
+      })
     });
+
+    var result = await response.json();
+
+    if (response.ok) {
+      showToast('Teacher added successfully!', 'success');
+      this.reset();
+      closeAddTeacherModal();
+      loadTeachers();
+    } else {
+      showToast(result.error || 'Failed to add teacher', 'error');
+    }
+  } catch (error) {
+    console.error('Error adding teacher:', error);
+    showToast('Failed to add teacher. Please try again.', 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Add Teacher';
+  }
+});
 
     // ===== DELETE TEACHER =====
     async function deleteTeacher(id) {
-      if (!confirm('Are you sure you want to delete this teacher?')) return;
+  if (!confirm('Are you sure you want to delete this teacher?')) return;
 
-      try {
-        var response = await fetch(backendUrl + '/api/college/' + collegeCode + '/teachers/' + id, {
-          method: 'DELETE',
-          headers: { 'Authorization': 'Bearer ' + authToken }
-        });
+  try {
+    // ✅ UPDATED: Use /api/teachers/college/${collegeCode}/${id}
+    var response = await fetch(backendUrl + '/api/teachers/college/' + collegeCode + '/' + id, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + authToken }
+    });
 
-        if (response.ok) {
-          showToast('Teacher deleted successfully', 'success');
-          loadTeachers();
-        } else {
-          var result = await response.json();
-          showToast(result.error || 'Failed to delete teacher', 'error');
-        }
-      } catch (error) {
-        console.error('Error deleting teacher:', error);
-        showToast('Failed to delete teacher', 'error');
-      }
+    if (response.ok) {
+      showToast('Teacher deleted successfully', 'success');
+      loadTeachers();
+    } else {
+      var result = await response.json();
+      showToast(result.error || 'Failed to delete teacher', 'error');
     }
+  } catch (error) {
+    console.error('Error deleting teacher:', error);
+    showToast('Failed to delete teacher', 'error');
+  }
+}
 
     // ===== SEARCH TEACHERS =====
     document.getElementById('searchInput').addEventListener('input', function(e) {
