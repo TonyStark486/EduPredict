@@ -833,32 +833,34 @@
     // LOAD DEPARTMENTS
     // ============================================
     async function loadDepartments() {
-      if (!checkAuthentication()) return;
+  if (!checkAuthentication()) return;
 
-      var listEl = document.getElementById('departmentsList');
-      listEl.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading departments...</p></div>';
+  var listEl = document.getElementById('departmentsList');
+  listEl.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading departments...</p></div>';
 
-      try {
-        var response = await authenticatedFetch(backendUrl + '/api/college/departments');
+  try {
+    // ✅ UPDATED: Use /api/departments/${collegeCode}
+    var response = await authenticatedFetch(backendUrl + '/api/departments/' + collegeCode);
 
-        if (!response.ok) {
-          throw new Error('Failed to load departments');
-        }
-
-        var data = await response.json();
-        departmentsData = data.departments || data || [];
-        renderDepartments();
-      } catch (error) {
-        console.error('Error loading departments:', error);
-        listEl.innerHTML = 
-          '<div class="empty-state">' +
-          '<i class="fas fa-exclamation-circle" aria-hidden="true"></i>' +
-          '<p>Failed to load departments. Please try again.</p>' +
-          '<button class="btn btn-primary retry-btn" onclick="loadDepartments()">' +
-          '<i class="fas fa-sync" aria-hidden="true"></i> Retry</button>' +
-          '</div>';
-      }
+    if (!response.ok) {
+      throw new Error('Failed to load departments');
     }
+
+    var data = await response.json();
+    // The response is now an array directly
+    departmentsData = Array.isArray(data) ? data : (data.departments || data || []);
+    renderDepartments();
+  } catch (error) {
+    console.error('Error loading departments:', error);
+    listEl.innerHTML = 
+      '<div class="empty-state">' +
+      '<i class="fas fa-exclamation-circle" aria-hidden="true"></i>' +
+      '<p>Failed to load departments. Please try again.</p>' +
+      '<button class="btn btn-primary retry-btn" onclick="loadDepartments()">' +
+      '<i class="fas fa-sync" aria-hidden="true"></i> Retry</button>' +
+      '</div>';
+  }
+}
 
     // ============================================
     // RENDER DEPARTMENTS
@@ -963,66 +965,67 @@
     // ADD DEPARTMENT
     // ============================================
     async function addDepartment(departmentName, departmentCode) {
-      var submitBtn = document.getElementById('submitAddBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Adding...';
+  var submitBtn = document.getElementById('submitAddBtn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Adding...';
 
-      try {
-        var response = await authenticatedFetch(backendUrl + '/api/college/departments', {
-          method: 'POST',
-          body: JSON.stringify({ 
-            name: departmentName, 
-            code: departmentCode,
-            department_code: departmentCode
-          })
-        });
+  try {
+    // ✅ UPDATED: Use /api/departments/${collegeCode}
+    var response = await authenticatedFetch(backendUrl + '/api/departments/' + collegeCode, {
+      method: 'POST',
+      body: JSON.stringify({ 
+        name: departmentName, 
+        code: departmentCode
+      })
+    });
 
-        if (!response.ok) {
-          var errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to add department');
-        }
-
-        showToast('Department added successfully!', 'success');
-        await loadDepartments();
-        closeAddDeptModal();
-      } catch (error) {
-        console.error('Error adding department:', error);
-        showToast('Error: ' + error.message, 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Add Department';
-      }
+    if (!response.ok) {
+      var errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to add department');
     }
+
+    showToast('Department added successfully!', 'success');
+    await loadDepartments();
+    closeAddDeptModal();
+  } catch (error) {
+    console.error('Error adding department:', error);
+    showToast('Error: ' + error.message, 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Add Department';
+  }
+}
 
     // ============================================
     // REMOVE DEPARTMENT
     // ============================================
     async function removeDepartment(departmentId) {
-      var submitBtn = document.getElementById('submitRemoveBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Removing...';
+  var submitBtn = document.getElementById('submitRemoveBtn');
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Removing...';
 
-      try {
-        var response = await authenticatedFetch(backendUrl + '/api/college/departments/' + departmentId, {
-          method: 'DELETE'
-        });
+  try {
+    // ✅ UPDATED: Use /api/departments/${departmentId}
+    var response = await authenticatedFetch(backendUrl + '/api/departments/' + departmentId, {
+      method: 'DELETE'
+    });
 
-        if (!response.ok) {
-          var error = await response.json();
-          throw new Error(error.error || 'Failed to remove department');
-        }
-
-        showToast('Department removed successfully!', 'success');
-        await loadDepartments();
-        closeRemoveDeptModal();
-      } catch (error) {
-        console.error('Error removing department:', error);
-        showToast('Error: ' + error.message, 'error');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i> Remove Department';
-      }
+    if (!response.ok) {
+      var error = await response.json();
+      throw new Error(error.error || 'Failed to remove department');
     }
+
+    showToast('Department removed successfully!', 'success');
+    await loadDepartments();
+    closeRemoveDeptModal();
+  } catch (error) {
+    console.error('Error removing department:', error);
+    showToast('Error: ' + error.message, 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-trash" aria-hidden="true"></i> Remove Department';
+  }
+}
 
     // ============================================
     // MODAL CONTROLS
